@@ -1,0 +1,2721 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Калькулятор КП · INEGO.dev</title>
+<style id="fonts">/* EMBEDDED_FONTS */</style>
+<style id="proposal-style">
+  :root {
+    --black: #16191b;
+    --ink: var(--black);
+    --paper: #eef4fd;
+    --surface: #f7faff;
+    --muted: #526185;
+    --soft: #5d6c93;
+    --line: #dbe4f5;
+    --gray-rail: #8395bb;
+    --blue: #0055ff;
+    --blue-dark: #0045cc;
+    --blue-light: #1998ff;
+    --blue-tint: #c6e4ff;
+    --client-yellow: #ffbd30;
+    --violet: #6046d0;
+    --violet-rail: #9e8ff9;
+    --violet-tint: #dfdbfa;
+    --violet-bg: #f0eefe;
+    --teal: #01c6b4;
+    --teal-dark: #006d66;
+    --teal-tint: #aae7e2;
+    --teal-bg: #d2f4f3;
+    --orange: #ff6430;
+    --orange-dark: #a33a19;
+    --orange-bg: color-mix(in srgb, var(--orange) 13%, white);
+    --text: Inter, Arial, sans-serif;
+    --display: "Inter Display", Inter, Arial, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; color: var(--ink); background: var(--paper); font: 14px/1.46 var(--text); }
+  h1,h2,h3,p { margin: 0; }
+  h1,h2,h3,.brand,.display { font-family: var(--display); letter-spacing: -.045em; }
+  .brand { font-size: 26px; font-weight: 600; white-space: nowrap; }
+  .brand small { color: var(--soft); font-size: .77em; font-weight: 600; }
+  .eyebrow { color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .17em; text-transform: uppercase; }
+  .tone-blue { --tone: var(--blue); --tone-bg: var(--blue-tint); --tone-rail: var(--blue-light); }
+  .tone-violet { --tone: var(--violet); --tone-bg: var(--violet-bg); --tone-rail: var(--violet-rail); }
+  .tone-green { --tone: var(--teal-dark); --tone-bg: var(--teal-bg); --tone-rail: var(--teal); }
+  .tone-amber { --tone: var(--orange-dark); --tone-bg: var(--orange-bg); --tone-rail: var(--orange); }
+  [data-work-accent="violet"] { --section-ink: var(--violet); --section-rail: var(--violet-rail); --section-surface: var(--violet-bg); --section-band: var(--violet-tint); }
+  [data-work-accent="green"] { --section-ink: var(--teal-dark); --section-rail: var(--teal); --section-surface: var(--teal-bg); --section-band: var(--teal-tint); }
+  [data-work-accent="blue"] { --section-ink: var(--blue-dark); --section-rail: var(--blue-light); --section-surface: var(--paper); --section-band: var(--blue-tint); }
+  .group-band { background: var(--tone-bg); color: var(--tone); border-left: 4px solid var(--tone-rail); font-size: 11px; font-weight: 600; letter-spacing: .095em; text-transform: uppercase; }
+  .sum-value { text-align: right; text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .sum-value strong,.sum-value small { display: block; }
+  .sum-value small { font-size: 9px; font-weight: 500; margin-top: 1px; }
+  .proposal { max-width: 930px; margin: 0 auto; padding: 38px 48px 42px; }
+  .proposal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
+  .proposal h1 { font-size: 43px; line-height: 1.02; margin: 8px 0 10px; }
+  .proposal-header .eyebrow { text-align: right; }
+  .quote-project { color: var(--muted); font-size: 15px; overflow-wrap: anywhere; }
+  .quote-section { margin-top: 23px; }
+  .quote-section :is(h2, h3) { font-size: 23px; margin-bottom: 8px; overflow-wrap: anywhere; }
+  .quote-section .queue-size { color: var(--muted); margin: -3px 0 8px; font-size: 12px; }
+  .quote-table-wrap { border-radius: 14px; overflow: hidden; background: white; }
+  .quote-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; }
+  .quote-table th, .quote-table td { padding: 7px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .quote-table thead th { color: var(--muted); font-size: 11px; font-weight: 500; }
+  .quote-table thead th:last-child, .quote-table td:last-child { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .quote-table .group-band { padding: 5px 12px; }
+  .quote-table .quote-group-amount { border-left: 0; text-align: right; white-space: nowrap; }
+  .quote-subgroup th { background: var(--violet-bg); color: var(--violet); font-size: 11px; }
+  .quote-subgroup th:last-child { text-align: right; white-space: nowrap; }
+  .quote-child td:first-child { padding-left: 22px; }
+  .quote-table tr[data-work-accent] td { background: var(--section-surface); }
+  .quote-table .quote-extra-lead td, .quote-subgroup[data-work-accent] th { background: var(--section-band); color: var(--section-ink); }
+  .quote-table tr[data-work-accent] > :first-child { border-inline-start: 3px solid var(--section-rail); }
+  .quote-table tbody tr:last-child td { border-bottom: 0; }
+  .quote-table .subtext { display: block; color: var(--muted); font-size: 10px; margin: 2px 0 0; }
+  .quote-table .quote-core td { background: var(--blue); color: white; }
+  .quote-table .quote-core .subtext { color: white; }
+  .quote-table .quote-sum td { background: var(--black); color: white; border: 0; font-weight: 600; }
+  .quote-totals { margin-top: 23px; border-radius: 14px; overflow: hidden; background: white; break-inside: avoid; }
+  .quote-service { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--line); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .quote-discounts { margin-top: 20px; border-radius: 14px; background: white; padding: 12px 16px; break-inside: avoid; }
+  .quote-discounts h2 { font-size: 19px; margin-bottom: 7px; }
+  .quote-discount { padding: 7px 0; font-size: 12px; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+  .quote-discount span { display: block; color: var(--muted); margin-top: 2px; }
+  .quote-final { background: var(--black); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .quote-final strong { font-family: var(--display); font-size: 24px; white-space: nowrap; }
+  .quote-note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+  .quote-footer { margin-top: 26px; color: var(--soft); font-size: 11px; }
+  .reply-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .reply-nav a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); background: white; font-weight: 600; text-decoration: none; }
+  .reply-nav a:hover { border-color: var(--blue); }
+  .reply-state { margin-top: 30px; scroll-margin-top: 72px; }
+  .reply-state > h2 { display: flex; align-items: center; gap: 9px; font-size: 26px; }
+  .reply-selected > h2 { color: var(--blue-dark); }
+  .reply-selected .quote-table-wrap { border: 1px solid var(--line); }
+  .reply-selected .quote-table .group-band { padding-block: 8px; border-inline-start: 0; color: white; background: var(--blue); }
+  .reply-selected .quote-table .group-band.tone-amber { color: var(--ink); background: var(--client-yellow); }
+  .reply-selected .quote-table .quote-extra-lead td { color: var(--ink); background: #fff3d8; }
+  .reply-selected .quote-table .quote-subgroup th { color: var(--blue-dark); background: var(--paper); }
+  .reply-work { display: grid; grid-template-columns: 19px minmax(0, 1fr); gap: 9px; align-items: start; }
+  .reply-work-name { font-weight: 600; overflow-wrap: anywhere; }
+  .reply-mark { display: inline-grid; place-items: center; width: 19px; height: 19px; flex: 0 0 19px; border-radius: 5px; color: white; background: var(--blue); font: 700 13px/1 var(--text); }
+  .reply-mark-off { color: var(--muted); background: var(--line); }
+  .reply-selected .quote-core .reply-mark { color: var(--blue); background: white; }
+  .reply-base { display: inline-block; margin-inline-start: 6px; padding: 1px 5px; border-radius: 4px; color: var(--blue-dark); background: var(--paper); font: 600 9px/1.4 var(--text); }
+  .reply-excluded-group { margin-bottom: 8px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: white; }
+  .reply-excluded-group h4 { margin: 0; padding: 8px 12px; color: var(--muted); background: var(--surface); font-size: 12px; }
+  .reply-excluded-group ul { margin: 0; padding: 0; list-style: none; font-size: 12px; }
+  .reply-excluded-group li { padding: 7px 12px; border-top: 1px solid var(--line); }
+  .reply-excluded-group small { color: var(--muted); }
+  @media (max-width: 620px) {
+    .proposal { padding: 24px 16px; }
+    .proposal h1 { font-size: 33px; }
+    .proposal-header { margin-bottom: 26px; }
+    .quote-table th,.quote-table td { padding: 6px 8px; }
+  }
+  @media print {
+    @page { size: A4; margin: 12mm 13mm; }
+    html,body { background: var(--paper); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .proposal { max-width: none; padding: 0; }
+    .proposal-header { margin-bottom: 24px; }
+    .proposal h1 { font-size: 34px; }
+    .quote-section :is(h2, h3), .quote-section .queue-size, .reply-state > h2, .reply-excluded-group h4 { break-after: avoid; }
+    .reply-nav { display: none; }
+    .quote-table tr { break-inside: avoid; }
+    .quote-table thead { display: table-header-group; }
+    .quote-table .group-band, .quote-subgroup { break-after: avoid; }
+    .quote-table tr:has(+ .quote-sum) { break-after: avoid; }
+  }
+</style>
+<style id="app-style">
+  button,input,select { font: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; }
+  button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  button { color: var(--ink); }
+  .wrap { width: min(1220px, 100%); margin-inline: auto; padding-inline: 48px; }
+  .masthead { display: flex; justify-content: space-between; align-items: center; gap: 18px; min-height: 86px; }
+  .mast-nav { display: flex; align-items: center; gap: 26px; }
+  .mast-nav button { border: 0; padding: 7px 0; background: transparent; color: var(--muted); font-size: 13px; }
+  .mast-nav button[aria-current="page"] { color: var(--ink); font-weight: 600; }
+  .mast-nav button:hover { color: var(--blue); }
+  .intro { padding: 14px 0 25px; }
+  .intro h1 { font-size: clamp(37px, 5vw, 58px); line-height: 1.02; font-weight: 700; margin-top: 8px; }
+  .intro p { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  .project-fields { display: grid; grid-template-columns: minmax(185px,.6fr) minmax(220px,1fr) minmax(310px,1fr); gap: 16px 22px; padding: 16px 20px 18px; background: white; border-radius: 18px; }
+  .field label,.field-label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 500; }
+  .field input, .text-input { color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 39px; padding: 8px 10px; width: 100%; min-width: 0; }
+  input::placeholder { color: var(--soft); opacity: 1; }
+  .modes { display: flex; flex-wrap: wrap; gap: 5px; }
+  .mode,.context { min-height: 38px; padding: 7px 12px; border: 1px solid var(--line); background: white; border-radius: 8px; font-size: 13px; white-space: nowrap; }
+  .mode:hover,.context:hover { border-color: var(--blue); }
+  .mode[aria-pressed="true"] { background: var(--blue); color: white; border-color: var(--blue); font-weight: 600; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(262px, 29%); align-items: start; gap: 24px; padding-top: 26px; }
+  .catalog { min-width: 0; }
+  .context-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .context { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  a.context { display: inline-flex; align-items: center; color: var(--ink); text-decoration: none; }
+  .client-contexts {
+    position: sticky;
+    top: 8px;
+    z-index: 3;
+    flex-wrap: nowrap;
+    padding: 5px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #16191b12;
+  }
+  .client-contexts .context { display: block; flex: 0 0 auto; min-height: 35px; padding-block: 7px; border-radius: 999px; }
+  .client-contexts .context[aria-current="location"] { background: var(--paper); border-color: var(--blue-tint); color: var(--blue); font-weight: 600; }
+  #estimate-all { scroll-margin-top: 8px; }
+  #estimate-all :is(#estimate-common, .estimate-object) { scroll-margin-top: 76px; }
+  .add { color: var(--blue); background: transparent; border-color: transparent; }
+  .subtle { background: transparent; border: 0; padding: 5px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .subtle:hover { color: var(--ink); }
+  .catalog-heading { margin: 16px 0 10px; }
+  .catalog-heading h2 { font-size: 30px; line-height: 1.06; }
+  .catalog-heading p { color: var(--muted); font-size: 13px; margin-top: 5px; }
+  .estimate-scope, .estimate-object { scroll-margin-top: 15px; }
+  .estimate-object { margin-top: 28px; }
+  .estimate-object > .catalog-heading { border-top: 1px solid var(--line); padding-top: 20px; }
+  .object-editor, .queue-editor { display: flex; align-items: end; flex-wrap: wrap; gap: 8px 12px; background: white; border-radius: 12px; padding: 12px 14px; }
+  .object-editor .field,.queue-editor .field { flex: 1 1 170px; }
+  .object-editor .discount-field { flex: 0 1 150px; }
+  .object-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+  .object-copy-status { flex: 1 0 100%; margin: 0; color: var(--teal-dark); font-size: 12px; }
+  .object-copy-status:empty { display: none; }
+  .object-totals { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: start; margin-top: 8px; padding: 9px 14px; background: var(--teal-bg); border-radius: 10px; font-size: 12px; }
+  .object-totals div { display: grid; gap: 2px; }
+  .object-totals span { color: var(--teal-dark); }
+  .object-totals strong { font-variant-numeric: tabular-nums; font-size: 14px; }
+  .object-totals small { flex-basis: 100%; color: var(--muted); }
+  .estimate-object .estimate-scope { margin-top: 14px; }
+  .queue-editor .field-label { margin-bottom: 5px; }
+  .sheet { border-radius: 16px; overflow: hidden; background: #fff; margin-top: 11px; }
+  .sheet-head, .work, .sheet-foot, .sheet .group-band { display: grid; grid-template-columns: minmax(0,1fr) 118px; gap: 10px; align-items: center; }
+  .sheet-head { padding: 9px 15px 9px 13px; color: var(--muted); font-size: 11px; min-height: 36px; }
+  .service-tag { color: var(--ink); font-family: var(--display); font-size: 17px; font-weight: 700; letter-spacing: -.025em; }
+  .sheet-head span:last-child,.sheet-foot span:last-child { text-align: right; }
+  .sheet .group-band { padding: 6px 14px 6px 10px; }
+  .work-subgroup { display: grid; grid-template-columns: minmax(0, 1fr) 118px; gap: 8px; align-items: center; padding: 7px 14px 7px 24px; border-block: 1px solid var(--violet-tint); background: var(--violet-bg); color: var(--violet); font-size: 12px; font-weight: 600; }
+  .work-subgroup[data-work-accent], .walk-options[data-work-accent] { color: var(--section-ink); background: var(--section-band); border-inline-start: 4px solid var(--section-rail); border-block-color: var(--section-rail); }
+  .work-subgroup[data-work-accent] .base { color: var(--section-ink); background: var(--section-surface); }
+  .work[data-work-subgroup] .work-label { padding-left: 10px; }
+  .walk-options { padding: 7px 14px 7px 24px; border-block: 1px solid var(--line); font-size: 12px; font-weight: 600; }
+  .work[data-parent-work] .work-label { padding-left: 10px; }
+  .work { position: relative; min-height: 49px; border-bottom: 1px solid var(--line); padding: 5px 12px 5px 11px; }
+  .work:has(.work-label input[data-item]:enabled) { cursor: pointer; }
+  .work input[type="text"] { cursor: text; }
+  .work:last-of-type { border-bottom: 0; }
+  .work[data-active="false"] { background: var(--surface); }
+  .work[data-work-accent] { background: var(--section-surface); border-inline-start: 4px solid var(--section-rail); }
+  .work[data-work-accent]:not([data-parent-work]):not([data-work-subgroup]) { border-top: 1px solid var(--section-rail); padding-top: 9px; }
+  .work[data-work-accent] .work-title { color: var(--section-ink); }
+  .work[data-work-accent] input[type="checkbox"] { accent-color: var(--section-ink); }
+  .work[data-pick-method] { background: var(--section-band, var(--violet-bg)); }
+  .work[data-pick-method] .work-title { font-weight: 600; }
+  .property-rule { margin: 0; padding: 7px 14px 7px 24px; background: var(--violet-bg); color: var(--muted); border-bottom: 1px solid var(--line); font-size: 12px; }
+  .property-rule[data-work-accent] { border-inline-start: 4px solid var(--section-rail); }
+  .property-rule[data-invalid="true"] { background: var(--orange-bg); color: var(--orange-dark); font-weight: 600; }
+  .property-rule:focus { outline: 2px solid var(--orange-dark); outline-offset: -2px; }
+  .missing.property-warning { width: 100%; border: 0; text-align: left; }
+  .work[data-key="core"] { background: var(--blue); color: white; }
+  .work[data-key="core"] .work-detail { color: #fff; }
+  .work[data-key="core"] .base { color: white; background: var(--blue-dark); }
+  .work-label { min-width: 0; display: flex; gap: 9px; align-items: flex-start; }
+  .work-main { min-width: 0; }
+  .work-info {
+    display: inline-grid;
+    place-items: center;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    margin-inline-start: 2px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: none;
+    color: var(--blue);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .work-info:hover { background: var(--paper); }
+  .work[data-key="core"] .work-info { color: white; }
+  .work[data-key="core"] .work-info:hover { background: #ffffff29; }
+  .work.with-variants { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .variant-chooser { margin: 9px 0 7px 24px; padding: 0; border: 0; min-width: 0; cursor: default; }
+  .variant-chooser legend { color: var(--muted); font-size: 11px; padding: 0 0 4px; }
+  .variant-grid { display: grid; grid-template-columns: repeat(var(--variant-count), minmax(0,1fr)); gap: 6px; }
+  .variant-card { display: flex; flex-direction: column; gap: 5px; min-width: 0; padding: 5px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+  .variant-card:has(input[type="radio"]:checked:not(:disabled)) { border-color: var(--blue); background: var(--paper); }
+  .work[data-work-accent] .variant-card:has(input[type="radio"]:checked:not(:disabled)) { border-color: var(--section-rail); background: var(--section-band); }
+  .variant-card:has(input[type="radio"]:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .variant-pick { display: block; flex: 1; min-width: 0; cursor: pointer; font-size: 12px; font-weight: 500; }
+  .variant-pick:has(input:disabled) { cursor: default; }
+  .variant-title { display: flex; align-items: flex-start; gap: 5px; overflow-wrap: anywhere; padding: 4px 2px 1px; }
+  .variant-title::before { content: ""; width: 10px; height: 10px; flex: 0 0 10px; border: 1px solid var(--gray-rail); border-radius: 100%; margin-top: 3px; background: white; }
+  .variant-pick:has(input:checked:not(:disabled)) .variant-title::before { background: var(--blue); border-color: var(--blue); box-shadow: inset 0 0 0 2px white; }
+  .work[data-work-accent] .variant-pick:has(input:checked:not(:disabled)) .variant-title::before { background: var(--section-ink); border-color: var(--section-ink); }
+  .variant-preview { display: grid; min-width: 0; place-items: center; aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden; background: var(--line); color: var(--muted); font-size: 11px; }
+  .variant-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .variant-price { font-size: 12px; color: var(--ink); padding: 0 2px; }
+  .variant-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 7px; padding: 0 2px; }
+  .media-control, .variant-actions button { padding: 2px 0; border: 0; background: none; font-size: 11px; color: var(--blue); cursor: pointer; text-align: left; text-decoration: underline; text-underline-offset: 2px; }
+  .media-control:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .media-status { color: var(--orange-dark); font-size: 11px; overflow-wrap: anywhere; }
+  .media-status:empty { display: none; }
+  .work-scope-text { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 8px; margin: 4px 0 4px 24px; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+  .work-scope-text input { flex: 1 1 180px; min-height: 31px; font-size: 12px; padding: 4px 7px; }
+  .poi-calculation { margin: 5px 0 3px 24px; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+  .poi-rate-label { display: block; margin-bottom: 3px; color: var(--muted); font-size: 11px; text-align: right; }
+  .sheet-dual .sheet-head, .sheet-dual .work, .sheet-dual .group-band, .sheet-dual .sheet-foot { grid-template-columns: minmax(0,1fr) 110px 110px; }
+  .sheet-dual .sheet-head span:not(:first-child) { text-align: right; }
+  .previous-price { margin: 4px 0 2px 24px; color: var(--orange-dark); font-size: 11px; }
+  .work-label input[type=checkbox] { accent-color: var(--blue); margin: 3px 0 0; width: 15px; height: 15px; flex: 0 0 15px; cursor: pointer; }
+  .required-check { display: inline-grid; place-items: center; font-size: 10px; width: 15px; height: 15px; flex: 0 0 15px; margin-top: 3px; border-radius: 3px; color: var(--blue-dark); background: var(--paper); font-weight: 700; line-height: 1; }
+  .work[data-key="core"] .required-check { color: white; background: var(--blue-dark); }
+  .work-title {
+    display: inline;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.22;
+    text-align: start;
+  }
+  .work-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .work-detail { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+  .base { font-size: 9px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600; color: var(--blue-dark); background: var(--paper); border-radius: 4px; padding: 2px 4px; display: inline; margin-inline-start: 4px; white-space: nowrap; }
+  .price { position: relative; min-width: 0; }
+  .price input { min-width: 0; width: 100%; text-align: right; padding: 5px 22px 5px 5px; border: 1px solid var(--line); background: white; color: var(--ink); border-radius: 6px; font-size: 12px; font-variant-numeric: tabular-nums; min-height: 31px; }
+  .price input:disabled { background: transparent; color: var(--muted); border-color: transparent; }
+  .price input[aria-invalid="true"], .field input[aria-invalid="true"] { border-color: var(--orange-dark); }
+  .price span { pointer-events: none; position: absolute; right: 8px; top: 6px; color: var(--muted); font-size: 12px; }
+  .sheet-foot { color: white; background: var(--black); padding: 7px 14px; min-height: 32px; font-size: 12px; font-weight: 600; }
+  .scope-total { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; background: white; font-weight: 600; font-size: 13px; }
+  .estimate { position: sticky; top: 14px; border-radius: 18px; overflow: hidden; background: white; }
+  .estimate-main { padding: 19px 17px 16px; }
+  .estimate h2 { font-size: 27px; line-height: 1.06; margin: 5px 0 13px; }
+  .estimate-stat { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .estimate-stat strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .missing { margin-top: 8px; color: var(--orange-dark); background: var(--orange-bg); border-inline-start: 3px solid var(--orange); border-radius: 8px; padding: 8px 10px; font-size: 12px; }
+  .estimate-final { background: var(--black); color: white; padding: 13px 17px 15px; }
+  .estimate-final span { display: block; font-size: 11px; color: var(--paper); }
+  .estimate-final strong { font-family: var(--display); display: block; font-size: 30px; line-height: 1.12; letter-spacing: -.045em; margin-top: 3px; overflow-wrap: anywhere; }
+  .estimate-actions { padding: 13px 17px 16px; }
+  .button { border: 1px solid var(--blue); background: var(--blue); color: white; border-radius: 999px; padding: 8px 15px; font-weight: 600; font-size: 13px; min-height: 38px; }
+  .button:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+  .button.secondary { color: var(--ink); background: white; border-color: var(--line); }
+  .button.secondary:hover { border-color: var(--blue); }
+  .button.primary { width: 100%; }
+  .footer { display: flex; justify-content: space-between; padding-block: 25px; color: var(--soft); font-size: 11px; }
+  dialog { color: var(--ink); width: min(820px, calc(100% - 28px)); max-height: calc(100dvh - 28px); padding: 0; border: 0; border-radius: 18px; background: var(--paper); }
+  dialog::backdrop { background: #16191b99; }
+  .work-inspector { position: fixed; inset: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(560px, 100%); max-width: none; margin: 0; border-radius: 18px 0 0 18px; }
+  .work-inspector::backdrop { background: #16191b55; }
+  .work-info-content { padding: 20px; }
+  .work-info-content h2 { margin: 4px 0 8px; font-size: 31px; line-height: 1.04; }
+  .work-info-content > p { margin: 8px 0; }
+  .work-info-content .info-terms { padding: 10px 12px; border-radius: 9px; background: var(--blue-tint); font-size: 13px; }
+  .info-visual { margin: 15px 0 0; }
+  .info-visual img, .info-visual video { display: block; width: 100%; max-height: 48dvh; object-fit: contain; border-radius: 10px; background: var(--line); }
+  .info-image-button { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 10px; background: none; cursor: zoom-in; }
+  .info-image-button::after {
+    content: "↗";
+    position: absolute;
+    inset: auto 8px 8px auto;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: white;
+    background: var(--black);
+    font-size: 18px;
+    line-height: 1;
+  }
+  .work-image-viewer {
+    width: min(1120px, calc(100% - 24px));
+    max-width: none;
+    max-height: calc(100dvh - 24px);
+    color: white;
+    background: var(--black);
+  }
+  .work-image-viewer::backdrop { background: #0b0c0ec9; }
+  .work-image-viewer .dialog-bar { color: white; background: var(--black); border-color: #ffffff30; }
+  .work-image-viewer .dialog-bar h2 { font-size: 18px; }
+  .work-image-viewer img { display: block; width: 100%; height: auto; max-height: calc(100dvh - 100px); object-fit: contain; }
+  .info-visual figcaption { color: var(--muted); margin-top: 5px; font-size: 11px; }
+  .info-media-actions { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; }
+  .info-visual-note { color: var(--muted); font-size: 12px; }
+  .dialog-bar { position: sticky; inset-block-start: 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 18px; background: var(--paper); border-bottom: 1px solid var(--line); z-index: 1; }
+  .dialog-bar h2 { font-size: 22px; }
+  .dialog-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .reference-inner { padding: 20px 18px 22px; }
+  .reference-inner p { margin-bottom: 10px; }
+  .reference-inner .field-label { margin-top: 16px; }
+  .reference-line { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .reference-line strong { white-space: nowrap; }
+  .reference-inner .button { margin-top: 13px; }
+  .reference-inner .missing[hidden] { display: none; }
+  .client-document {
+    --client-soft: #e9eff9;
+    --client-warning: #ff9831;
+    --client-traffic: #286ef0;
+    --client-card-radius: 23px;
+    background: #f5f5f5;
+  }
+  .client-intro { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); align-items: end; gap: 16px 30px; margin: 6px 0 18px; }
+  .client-intro .intro { padding: 0; }
+  .client-intro h1 { max-width: 510px; font-size: clamp(34px, 4.6vw, 60px); font-weight: 600; line-height: .99; letter-spacing: -.065em; }
+  .client-intro .intro p { margin-top: 13px; font-size: 14px; }
+  .client-project {
+    display: grid;
+    grid-template-columns: minmax(0,.7fr) minmax(0,1.3fr);
+    align-items: start;
+    gap: 12px 18px;
+    padding: 15px 18px;
+    background: var(--client-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--client-card-radius);
+  }
+  .client-project strong { display: block; font-size: 15px; overflow-wrap: anywhere; }
+  .client-project .field:last-child { grid-column: 1 / -1; }
+  .client-project .mode { min-height: 32px; padding-block: 5px; border-radius: 999px; font-size: 12px; }
+  .client-overview { display: grid; grid-template-columns: minmax(0,1.24fr) repeat(2,minmax(0,1fr)); gap: 9px; }
+  .client-metric {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    gap: 11px;
+    min-width: 0;
+    min-height: 130px;
+    padding: 15px 19px;
+    border: 1px solid var(--line);
+    border-radius: var(--client-card-radius);
+    background: white;
+    border-top-color: var(--blue);
+    scroll-margin-top: 8px;
+  }
+  .client-metric h2 { font: 500 13px/1.25 var(--text); letter-spacing: -.01em; }
+  .client-metric:has(.client-metric-link) h2 { padding-inline-end: 31px; }
+  .client-metric .client-metric-value, .client-metric .estimate-final strong {
+    display: block;
+    font: 600 clamp(29px, 4.1vw, 48px)/1 var(--display);
+    letter-spacing: -.061em;
+    font-variant-numeric: tabular-nums;
+  }
+  .client-metric-link {
+    position: absolute;
+    inset: 12px 12px auto auto;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: white;
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .client-metric-link:hover { background: var(--paper); border-color: var(--blue-tint); color: var(--blue); }
+  .client-estimate-top { background: var(--black); border-color: var(--black); color: white; }
+  .client-estimate-top .client-metric-link { background: var(--paper); border-color: var(--paper); color: var(--blue); }
+  .client-estimate-top .client-metric-link:hover { background: white; border-color: white; }
+  .client-estimate-top .estimate-final { display: flex; flex-direction: column-reverse; gap: 6px; padding: 0; background: transparent; }
+  .client-estimate-top .estimate-final strong { margin: 0; }
+  .client-layout { grid-template-areas: "works summary"; padding-top: 16px; }
+  .client-layout .catalog { grid-area: works; }
+  .client-contexts { border-radius: 999px; box-shadow: 0 1px 5px #16191b0c; }
+  .client-layout .estimate {
+    display: flex;
+    flex-direction: column;
+    grid-area: summary;
+    top: 8px;
+    max-height: calc(100dvh - 16px);
+    border: 1px solid var(--line);
+    border-radius: var(--client-card-radius);
+    scroll-margin-top: 8px;
+  }
+  .client-layout .estimate > :not(.estimate-main) { flex-shrink: 0; }
+  .client-layout .estimate h2 { margin: 0; padding: 16px 16px 9px; font-size: 22px; }
+  .client-layout .estimate-main {
+    display: grid;
+    gap: 6px;
+    overflow: auto;
+    margin-inline: 10px;
+    padding: 2px;
+  }
+  .client-layout .estimate-stat { min-width: 0; border: 0; }
+  .client-service-price { padding: 8px 10px; border-radius: 11px; background: var(--client-soft); }
+  .client-layout .client-object-price {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(104px, 41%);
+    align-items: stretch;
+    gap: 0;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    color: var(--ink);
+    background: white;
+    text-decoration: none;
+  }
+  .client-object-price > span {
+    display: grid;
+    align-content: center;
+    gap: 2px;
+    padding: 8px 10px;
+    overflow-wrap: anywhere;
+  }
+  .client-object-price b { font-weight: 600; }
+  .client-object-price small { color: var(--muted); font-size: 10px; }
+  .client-layout .client-object-price strong {
+    display: grid;
+    align-content: center;
+    padding: 8px 10px;
+    color: white;
+    background: var(--black);
+    text-align: right;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .client-object-price:hover, .client-object-price:focus-visible { border-color: var(--blue); }
+  .client-object-price:focus-visible { outline: 2px solid var(--blue); }
+  .client-layout .client-object-price[aria-current="location"] { border-color: var(--blue); }
+  .client-object-price[aria-current="location"] > span { color: white; background: var(--blue); }
+  .client-object-price[aria-current="location"] small { color: inherit; }
+  .client-section-prices {
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface);
+  }
+  .client-section-price-note {
+    padding-block: 5px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .client-section-price {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .client-section-price + .client-section-price { border-top: 1px solid var(--line); }
+  .client-section-price-note:not(:first-child) { border-top: 1px solid var(--line); }
+  .client-section-price > :first-child { overflow-wrap: anywhere; }
+  .client-section-price .sum-value { max-width: 112px; }
+  .client-section-price small { color: var(--muted); }
+  .client-section-price-extra {
+    margin-inline-start: 6px;
+    padding-inline-start: 8px;
+    border-inline-start: 2px solid var(--client-yellow);
+    color: var(--muted);
+  }
+  .client-section-price-extra strong { color: var(--ink); }
+  .client-layout .estimate-main .missing { margin-block: 5px; background: var(--client-warning); color: var(--ink); border: 0; }
+  .client-sidebar-total {
+    display: grid;
+    gap: 4px;
+    margin: 8px 12px 0;
+    padding: 10px 12px 12px;
+    border-radius: 12px;
+    color: white;
+    background: var(--black);
+  }
+  .client-sidebar-total span { color: var(--paper); font-size: 11px; font-weight: 500; }
+  .client-sidebar-total strong {
+    font: 700 clamp(24px, 2vw, 32px)/1.08 var(--display);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.025em;
+    overflow-wrap: anywhere;
+  }
+  .client-layout .estimate-actions { padding: 8px 12px 12px; }
+  .client-return { display: none; }
+  .client-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 15px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--client-card-radius);
+    background: white;
+  }
+  .client-section-head { margin: 0 0 12px; }
+  .client-section-head h2 { font-size: clamp(23px, 3vw, 32px); line-height: 1.08; overflow-wrap: anywhere; }
+  .client-section-head p { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .client-section-copy { flex: 1 1 235px; min-width: 0; }
+  .client-heading-total { flex: 0 1 auto; margin-inline-start: auto; color: var(--muted); text-align: right; font-size: 11px; }
+  .client-heading-total .sum-value { text-align: inherit; }
+  .client-heading-total strong { font-size: 16px; color: var(--ink); }
+  .client-layout .estimate-object { margin-top: 28px; }
+  .client-layout .estimate-object .estimate-scope { margin-top: 0; }
+  .client-layout .estimate-object .estimate-scope + .estimate-scope { margin-top: 12px; }
+  .client-layout .client-queue-card {
+    --queue-cell-padding: clamp(14px, 3.3cqi, 30px);
+    display: block;
+    container-type: inline-size;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--client-card-radius);
+    color: var(--black);
+    background: white;
+  }
+  .client-queue-details {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+  .client-queue-details:has(> .client-apartments) {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.08fr);
+  }
+  .client-queue-card .client-queue-details > * {
+    display: grid;
+    align-content: center;
+    justify-content: start;
+    gap: 6px;
+    min-width: 0;
+    min-height: 112px;
+    margin: 0;
+    padding: var(--queue-cell-padding);
+    border-radius: 0;
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+  .client-queue-name h2 { font-size: clamp(25px, 4cqi, 35px); line-height: 1.04; }
+  .client-queue-name h3 { order: -1; font: 650 14px/1.2 var(--text); letter-spacing: 0; }
+  .client-queue-details .client-apartments { color: white; background: var(--blue); }
+  .client-queue-details :is(.object-totals, .client-heading-total) { color: white; background: var(--black); }
+  .client-queue-details :is(.field-label, .object-total-primary > span, .client-heading-total > span:first-child) {
+    margin: 0;
+    color: inherit;
+    font: 600 clamp(12px, 2cqi, 17px)/1.25 var(--text);
+  }
+  .client-queue-details :is(.client-apartments, .object-total-primary, .client-heading-total) strong {
+    color: inherit;
+    font: 700 clamp(23px, 4.55cqi, 40px)/1.05 var(--display);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.025em;
+  }
+  .client-queue-details .object-total-primary { order: -1; gap: 6px; }
+  .client-queue-details .object-totals > div:not(.object-total-primary) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+  .client-queue-details .object-totals :is(div:not(.object-total-primary) > *, small) {
+    color: #dbe4f5;
+    font-size: 11px;
+  }
+  .client-queue-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 9px var(--queue-cell-padding);
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .client-queue-footer .client-heading-total { text-align: start; margin: 0; }
+  @container (max-width: 430px) {
+    .client-queue-details { grid-template-columns: minmax(0, 1fr); }
+    .client-queue-details:has(> .client-apartments) { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+    .client-queue-card .client-queue-details > * { min-height: 78px; }
+    .client-queue-name { grid-column: 1 / -1; }
+  }
+  .client-layout .sheet { background: transparent; overflow: visible; }
+  .client-layout .sheet-head { padding: 4px 2px 8px; }
+  .client-layout .service-tag { margin: 0; font-size: 15px; }
+  .client-group {
+    --client-group-fill: var(--blue);
+    --client-group-ink: white;
+    --client-group-inset: 8px;
+    overflow: hidden;
+    padding: var(--client-group-inset);
+    border: 1px solid var(--client-group-fill);
+    border-radius: 19px;
+    background: var(--client-group-fill);
+  }
+  .client-group.tone-amber { --client-group-fill: var(--client-yellow); --client-group-ink: var(--ink); }
+  .client-group + .client-group { margin-block-start: clamp(14px, 1.8vw, 24px); }
+  .client-common-ue5 .client-group { --client-group-fill: white; --client-group-ink: var(--blue); border-color: var(--line); }
+  .client-layout .client-group .group-band { padding: 10px 10px 13px; border: 0; background: transparent; color: var(--client-group-ink); text-transform: none; letter-spacing: 0; }
+  .client-group-title {
+    margin: 0;
+    color: inherit;
+    font: 700 clamp(18px, 2vw, 25px)/1.14 var(--display);
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+  }
+  .client-group-rows { overflow: hidden; background: white; border: 1px solid var(--line); border-radius: 13px; }
+  .client-layout .group-band .sum-value { font-size: 14px; }
+  .client-layout .work-subgroup, .client-layout .walk-options { padding-block: 8px; }
+  .client-layout [data-work-accent] {
+    --section-ink: var(--blue);
+    --section-rail: var(--blue-tint);
+    --section-surface: white;
+    --section-band: var(--paper);
+  }
+  .client-layout .walk-options[data-work-accent] { background: var(--violet-bg); }
+  .client-layout .work { padding-block: 7px; background: white; }
+  .client-layout .work-title { font-size: 14px; }
+  .client-layout .work-detail { font-size: 12px; }
+  .client-layout .work[data-required] { background: var(--paper); }
+  .client-common-ue5 .work[data-required] { background: white; }
+  .client-layout .work[data-key="core"] { color: var(--ink); }
+  .client-layout .work[data-key="core"] :is(.work-detail, .client-rate) { color: var(--muted); }
+  .client-layout .work[data-key="core"] .base { color: var(--blue-dark); background: var(--paper); }
+  .client-group.tone-amber .client-group-rows { border: 0; border-radius: 0 0 13px 13px; }
+  .client-group.tone-amber .work.client-extra-work { padding: 0; border: 0; }
+  .client-extra-work .work-label { padding: 8px 12px; background: var(--client-yellow); }
+  .client-extra-work .work-label > span:nth-child(2) { flex: 1; min-width: 0; }
+  .client-extra-total {
+    flex: 0 1 auto;
+    min-width: min(76px, 25%);
+    max-width: 38%;
+    padding: 5px 8px;
+    border-radius: 7px;
+    color: var(--ink);
+    background: #fff3d3;
+  }
+  .client-group.tone-amber .work-title { color: var(--ink); }
+  .client-group.tone-amber :is(.walk-options, .work[data-parent-work]) { border-inline-start: 0; padding-inline-start: 12px; }
+  .client-group.tone-amber .work[data-parent-work] .work-label { padding-inline-start: 0; }
+  .client-extra-work :is(.variant-chooser, .work-scope-text) { margin-inline-end: 12px; }
+  .client-group.tone-amber :is(.client-extra-work[data-active="false"], [data-parent-inactive]) { background: #f0f1f3; }
+  .client-extra-work[data-active="false"] :is(.variant-chooser, .work-scope-text),
+  .client-layout [data-parent-inactive] :is(.work-main, .client-rate) { opacity: .78; }
+  .client-extra-work[data-active="false"] .variant-preview { filter: grayscale(1); }
+  .client-group-rows:has(> .client-subgroup) { overflow: visible; border: 0; background: transparent; }
+  .client-group-rows:has(> .client-subgroup) > .work:first-child { border-radius: 13px 13px 0 0; }
+  .client-subgroup { --client-subgroup-fill: var(--blue); }
+  .client-subgroup-traffic { --client-subgroup-fill: var(--client-traffic); }
+  .client-subgroup > .work-subgroup {
+    margin-inline: calc(-1 * var(--client-group-inset));
+    padding: 8px calc(10px + var(--client-group-inset)) 10px;
+    border: 0;
+    background: var(--client-subgroup-fill);
+    color: white;
+  }
+  .client-subgroup > .work-subgroup > [role="heading"] {
+    font: 700 clamp(16px, 1.55vw, 20px)/1.15 var(--display);
+    letter-spacing: -.028em;
+    overflow-wrap: anywhere;
+  }
+  .client-subgroup > .work-subgroup .sum-value { font-size: 13px; }
+  .client-subgroup-rows { overflow: hidden; background: white; }
+  .client-subgroup:last-child > .client-subgroup-rows { border-radius: 0 0 13px 13px; }
+  .client-subgroup-rows .work { background: transparent; border-inline-start: 0; }
+  .client-subgroup-rows .work[data-required] { background: #e3ebf9; }
+  .client-subgroup-rows .work[data-work-subgroup] .work-label { padding-inline-start: 0; }
+  .client-subgroup-rows .property-rule { border-inline-start: 0; }
+  .client-subgroup-rows .property-rule:not([data-invalid="true"]) { background: transparent; }
+  .client-layout .required-check, .client-layout input[role="switch"] {
+    width: 34px;
+    height: 20px;
+    flex: 0 0 34px;
+    margin-top: 2px;
+  }
+  .client-layout .required-check { position: relative; border-radius: 6px; color: var(--soft); background: var(--line); }
+  .client-layout .required-check::before, .client-layout .required-check::after { content: ""; position: absolute; left: 50%; translate: -50% 0; }
+  .client-layout .required-check::before { top: 4px; width: 7px; height: 7px; border: 1.5px solid currentColor; border-radius: 5px 5px 0 0; }
+  .client-layout .required-check::after { top: 9px; width: 10px; height: 7px; border-radius: 2px; background: currentColor; }
+  .client-layout .work[data-key="core"] .required-check { color: var(--soft); background: var(--line); }
+  .client-layout input[role="switch"] {
+    --switch-knob: 8px;
+    appearance: none;
+    border: 1px solid var(--gray-rail);
+    border-radius: 999px;
+    background: radial-gradient(circle at var(--switch-knob) center, white 0 5.5px, transparent 6px) var(--line);
+  }
+  .client-layout input[role="switch"]:checked {
+    --switch-knob: calc(100% - 8px);
+    background-color: var(--section-ink, var(--blue));
+    border-color: var(--section-ink, var(--blue));
+  }
+  .client-layout input[role="switch"]:disabled { cursor: not-allowed; background-color: var(--paper); border-color: var(--line); }
+  .client-layout .variant-chooser, .client-layout .work-scope-text, .client-layout .poi-calculation { margin-inline-start: 43px; }
+  .client-layout .variant-title::before { content: none; }
+  .client-layout .variant-pick:has(input:checked:not(:disabled)) .variant-title { font-weight: 600; }
+  .client-layout .variant-pick:has(input:checked:not(:disabled)) .variant-title::after {
+    content: "";
+    flex: 0 0 9px;
+    height: 5px;
+    margin: 4px 2px 0 auto;
+    border-left: 2px solid var(--section-ink, var(--blue));
+    border-bottom: 2px solid var(--section-ink, var(--blue));
+    transform: rotate(-45deg);
+  }
+  .client-layout .variant-price { display: block; margin-top: 4px; }
+  .client-layout .work-info { margin-inline-start: 4px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); }
+  .client-layout .work-info:hover { border-color: var(--blue-tint); background: var(--paper); }
+  .client-layout .client-extra-work .work-info { color: var(--ink); border-color: #8a5a00; background: transparent; }
+  .client-layout .client-extra-work .work-info:hover { background: #ffffff40; }
+  .client-layout .work[data-key="core"] .work-info { color: var(--blue); border-color: var(--line); background: var(--surface); }
+  .client-layout .sheet-foot { color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 13px; }
+  .client-layout .client-common-ue5 .sheet-foot { color: white; background: var(--black); border-color: var(--black); }
+  .client-rate { text-align: right; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .client-layout .work[data-active="true"] .client-rate { font-weight: 600; }
+  .work[data-key="core"] .client-rate { color: white; }
+  .client-guide {
+    position: fixed;
+    z-index: 4;
+    inset-inline-end: max(48px, calc((100% - 1124px) / 2));
+    inset-block-end: max(14px, env(safe-area-inset-bottom));
+    width: clamp(240px, calc(29% - 28px), 324px);
+    padding: 14px 43px 14px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 19px;
+    box-shadow: 0 6px 24px #16191b20;
+  }
+  .client-guide h2 { font-size: 18px; line-height: 1.1; margin-bottom: 6px; }
+  .client-guide p { color: var(--muted); font-size: 12px; }
+  .client-guide p + p { margin-top: 4px; }
+  .client-guide strong { color: var(--ink); }
+  .client-guide .base { margin-inline-start: 0; }
+  .client-guide-close {
+    position: absolute;
+    inset: 8px 8px auto auto;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: white;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .client-guide-close:hover { background: var(--client-soft); }
+  .copy-status { padding: 0 18px; margin-top: 8px; color: var(--teal-dark); }
+  #print { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 920px) {
+    .wrap { padding-inline: 28px; }
+    .project-fields { grid-template-columns: minmax(125px,.55fr) minmax(160px,1fr) minmax(235px,1fr); gap: 14px; }
+    .layout { gap: 16px; grid-template-columns: minmax(0,1fr) 250px; }
+    .client-guide { inset-inline-end: 28px; width: 250px; }
+  }
+  @media (max-width: 740px) {
+    .wrap { padding-inline: 16px; }
+    .masthead { min-height: 65px; }
+    .mast-nav { gap: 16px; }
+    .layout { grid-template-columns: minmax(0,1fr); padding-top: 17px; }
+    .estimate { position: static; }
+    .client-layout { grid-template-areas: "works" "summary"; }
+    .client-intro { grid-template-columns: minmax(0,1fr); gap: 12px; margin-top: 4px; }
+    .client-intro .intro p { font-size: 13px; }
+    .client-overview { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .client-metric { min-height: 90px; padding: 12px 15px; }
+    .client-estimate-top { grid-column: 1 / -1; min-height: 105px; }
+    .client-layout .estimate { max-height: none; }
+    .client-guide { inset-inline-end: 16px; width: min(360px, calc(100% - 32px)); }
+    .client-return { display: block; margin-top: 16px; text-align: center; text-decoration: none; }
+    .project-fields { grid-template-columns: minmax(0,.75fr) minmax(0,1fr); padding: 14px; }
+    .project-fields .field:last-child { grid-column: 1/-1; }
+    .intro { padding-block: 9px 18px; }
+    .work-inspector { inset: auto 0 0; height: auto; max-height: 88dvh; width: 100%; border-radius: 18px 18px 0 0; }
+    .work-image-viewer { width: 100%; max-height: 100dvh; border-radius: 0; }
+    .work-info-content { padding: 14px 16px 22px; }
+    .work-info-content .info-visual { margin-inline: -6px; }
+  }
+  @media (max-width: 450px) {
+    .mast-nav button { font-size: 12px; }
+    .mast-nav { gap: 11px; }
+    .brand { font-size: 22px; }
+    .sheet-head,.work,.sheet-foot,.sheet .group-band { grid-template-columns: minmax(0,1fr) 91px; gap: 6px; }
+    .work-subgroup { grid-template-columns: minmax(0,1fr) 91px; padding-left: 16px; }
+    .sheet-dual .sheet-head, .sheet-dual .work, .sheet-dual .group-band, .sheet-dual .sheet-foot { grid-template-columns: minmax(0,1fr) 75px 75px; }
+    .variant-chooser { margin-left: 0; }
+    .client-layout .variant-chooser, .client-layout .work-scope-text, .client-layout .poi-calculation { margin-inline-start: 0; }
+    .variant-grid[data-count="4"] { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .variant-title { font-size: 11px; }
+    .work { padding-inline: 8px; }
+    .work-label { gap: 5px; }
+    .client-section-head .client-heading-total { margin-inline-start: 0; text-align: left; }
+  }
+  @media (forced-colors: active) {
+    .client-layout input[role="switch"] { appearance: auto; width: 16px; height: 16px; flex-basis: 16px; }
+    .client-layout .required-check::after { forced-color-adjust: none; background: CanvasText; }
+  }
+  @media print {
+    #app,dialog { display: none !important; }
+    #print { display: block; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="masthead wrap">
+    <div class="brand">INEGO<small>.dev</small></div>
+    <nav class="mast-nav" aria-label="Разделы">
+      <button type="button" data-action="focus-estimate" aria-current="page">Смета</button>
+      <button type="button" data-action="reference">Цены из примера</button>
+      <button type="button" data-action="preview">Итог</button>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <div class="eyebrow">Коммерческое предложение</div>
+      <h1>Калькулятор КП</h1>
+      <p>Интерактивные макеты WEB и UE5 · фильтр квартир и визуализация генплана</p>
+      <p>Все объекты и очереди в одной смете. Галочки задают начальный выбор клиента.</p>
+    </section>
+    <section class="project-fields" aria-label="Данные проекта">
+      <div class="field"><label for="city">Город</label><input id="city" data-meta="city" maxlength="80" value="Суворов" autocomplete="off"></div>
+      <div class="field"><label for="project">Название ЖК</label><input id="project" data-meta="project" maxlength="120" placeholder="Указать позднее" autocomplete="off"></div>
+      <div class="field"><span class="field-label" id="mode-label">Формат макета</span>
+        <div class="modes" role="group" aria-labelledby="mode-label">
+          <button class="mode" type="button" data-mode="WEB" aria-pressed="false">WEB</button>
+          <button class="mode" type="button" data-mode="UE5" aria-pressed="false">UE5</button>
+          <button class="mode" type="button" data-mode="both" aria-pressed="true">WEB + UE5</button>
+        </div>
+      </div>
+    </section>
+    <div class="layout">
+      <section class="catalog" aria-label="Перечень работ">
+        <div id="contexts" class="context-bar" role="group" aria-label="Разделы сметы"></div>
+        <div id="catalog"></div>
+      </section>
+      <aside class="estimate" aria-labelledby="summary-title">
+        <div class="estimate-main">
+          <div class="eyebrow">Итог</div>
+          <h2 id="summary-title">Общая стоимость</h2>
+          <div id="summary"></div>
+        </div>
+        <div id="sum-total" class="estimate-final" aria-live="polite"></div>
+        <div class="estimate-actions"><button type="button" class="button primary" data-action="preview">Сформировать КП</button></div>
+      </aside>
+    </div>
+    <footer class="footer"><span>INEGO.dev · dev.inego.net</span><span>Смета WEB и UE5</span></footer>
+  </main>
+</div>
+<dialog id="quote-dialog" aria-labelledby="preview-title">
+  <div class="dialog-bar">
+    <h2 id="preview-title">Предпросмотр КП</h2>
+    <div class="dialog-actions">
+      <button class="button secondary" type="button" data-action="close-preview">Закрыть</button>
+      <button class="button secondary" type="button" data-action="download">Скачать КП для клиента</button>
+      <button class="button" type="button" data-action="print">Печать / PDF</button>
+    </div>
+  </div>
+  <p class="quote-note copy-status" style="color:var(--muted)">Клиент получит интерактивный HTML. Для WEB отдельно и WEB вместе с UE5 используются расценки из соответствующих режимов.</p>
+  <div id="quote-view"></div>
+</dialog>
+<dialog id="reference-dialog" aria-labelledby="reference-title">
+  <div class="dialog-bar">
+    <h2 id="reference-title">Цены из примера</h2>
+    <button class="button secondary" type="button" data-action="close-reference">Закрыть</button>
+  </div>
+  <div class="reference-inner" id="reference-view"></div>
+</dialog>
+<div id="print"></div>
+<script id="catalog-script">
+const work = (key, title, detail, required = false, reference = null) => ({ key, title, detail, required, reference });
+const group = (title, color, items, settings = {}) => ({
+  title,
+  color,
+  items: [...items.filter(item => item.required), ...items.filter(item => !item.required)],
+  ...settings,
+});
+const withVariants = (item, variantLabel, variants) => ({ ...item, variantLabel, variants });
+const designOptions = [
+  ["project", "По дизайн-проекту заказчика"],
+  ["reference", "По референсам заказчика"],
+  ["inego", "Концепция INEGO"],
+];
+const designOptionsWithWhiteBox = [...designOptions, ["whiteBox", "White box"]];
+const extra = (key, title, detail, variants = designOptions) => ({
+  ...withVariants(work(key, title, detail), "Основа для моделирования", variants),
+  hasScopeText: true,
+  extraGroup: key,
+});
+const walkOptions = (parent, items) => items.map(item => ({ ...item, requires: [parent], parentWork: parent, extraGroup: parent }));
+const catalog = {
+  common: {
+    WEB: [
+      group("Программная часть", "violet", [
+        work("core", "Ядро WEB-макета", "Загрузка сцены, управление камерой, навигация по объектам и очередям.", true),
+        work("filter", "Фильтр и карточки квартир", "Параметры: цена, площадь, этаж, комнатность и теги. В выдаче доступны планировка и цена.", true),
+        work("test", "Сборка, встраивание и тестирование", "Проверка макета в браузере и подключение к сайту.", true),
+      ]),
+      group("Интерфейс", "green", [
+        work("interface", "Адаптивный интерфейс", "Работа фильтра и генплана на смартфоне, планшете и ПК.", true),
+        work("brand", "Адаптация под брендбук", "Цвета, шрифты и графика заказчика."),
+      ]),
+    ],
+    UE5: [
+      group("Интерфейс и программная часть", "violet", [
+        work("core", "Ядро приложения UE5", "Управление камерой, навигация по объектам и очередям, выбор корпуса и секции. В ядро входят смена времени суток, настройка освещения, компас и инструкция по управлению.", true),
+        work("territoryPoi", "Точки интереса на территории ЖК", "Фильтрация точек по категориям, навигация по территории и переход к выбранной точке интереса.", true),
+        work("screenshot", "Галерея снимков сессии менеджера", "Снимки экрана, сделанные во время работы с макетом, сохраняются в галерее текущей сессии менеджера.", true),
+        work("favorites", "Избранное", "Раздел сохранённых квартир с фильтрацией, сортировкой и привязкой списка к ID сессии.", true),
+        work("filter", "Фильтр и карточки квартир", "Параметры: цена, площадь, этаж, комнатность и теги. Связь результатов с 3D-сценой.", true),
+        work("interface", "Интерфейс подбора", "Экраны генплана, фильтра и карточек квартир.", true),
+        work("test", "Компиляция, тестирование и отладка", "Проверка сценариев подбора и готовой сборки.", true),
+        work("crm", "Интеграция с CRM застройщика", "Синхронизация данных о квартирах, ценах и статусах через API CRM застройщика.", true),
+        work("presentationDelivery", "Формирование и отправка предложения по квартире", "Покупатель оставляет заявку в карточке квартиры. Макет формирует файл с предложением по выбранной квартире и отправляет его покупателю.", true),
+        work("interiorWindowView", "Вид из окна квартиры", "Вид из окна можно открыть из карточки квартиры, с её детальной страницы и из раздела «Избранное». Внутри тура по квартире вид тоже доступен."),
+        withVariants(
+          work("presentationStyle", "Оформление предложения по квартире", "Для файла предложения можно дополнительно выбрать базовый стиль или оформление по брендбуку заказчика."),
+          "Стиль файла предложения",
+          [["basic", "Базовый стиль"], ["brand", "По брендбуку заказчика"]],
+        ),
+        work("dlss5", "DLSS 5", "Интеграция режима DLSS 5 в параметры графики UE5-макета."),
+        work("photoMode", "Фоторежим для рекламного контента", "Редактор кадров с настройками камеры, композиции, освещения и изображения."),
+        work("comparison", "Лист сравнения квартир", "Сравнение планировок, цен и других параметров выбранных квартир в одном списке."),
+        work("mortgage", "Ипотечный калькулятор", "Расчёт ориентировочного ежемесячного платежа по цене квартиры, первоначальному взносу, ставке и сроку."),
+        work("interactivePresentation", "Интерактивная презентация ЖК", "Отдельный сценарий демонстрации проекта с переходами между разделами презентации."),
+        work("brand", "Адаптация интерфейса под брендбук", "Подготовка макетов интерфейса с цветами, шрифтами и графикой заказчика."),
+        work("brandLayout", "Вёрстка интерфейса под брендбук заказчика", "Сборка экранов и элементов управления UE5 по согласованным макетам интерфейса."),
+        work("cityFilter", "Верхний фильтр по всем ЖК", "Работает на карте города. Покупатель задаёт параметры квартиры, видит подходящие ЖК и может перейти к выбранному комплексу. При выборе фильтра включается карта."),
+        withVariants(
+          work("cityMap", "Интерактивная карта города с навигацией по ЖК", "Карта с расположением ЖК и переходом к макету каждого объекта. Её можно выбрать отдельно. При отключении карты верхний фильтр тоже отключается."),
+          "Оформление карты",
+          [["styled", "Стилизованная"], ["satellite", "Как на спутниковом снимке"]],
+        ),
+      ]),
+    ],
+  },
+  object: {
+    WEB: [],
+    UE5: [
+      group("Интерфейс и программная часть объекта", "violet", [
+        work("projectPresentationPdf", "Презентация проекта (PDF)", "Если заказчик предоставит готовую презентацию проекта или брендбук в PDF, интегрируем документ в макет этого ЖК для просмотра."),
+      ]),
+      group("Инфраструктура", "blue", [
+        work("walkingRadius", "Круги пешей доступности", "Круги на карте вокруг ЖК с указанием расстояния и ориентировочного времени пешком.", true),
+        work("infrastructurePoi", "Точки интереса и фильтрация", "Точки инфраструктуры на карте с фильтрацией по категориям.", true),
+        work("infrastructureFlyover", "Подлёт к важным точкам", "Подлёт камеры к важным точкам в пределах выбранного радиуса детализированного окружения. Для каждой точки открывается карточка с кратким описанием."),
+      ], { subgroup: true }),
+      group("Территория ЖК", "green", [
+        work("landscapeWalk", "Прогулка по благоустройству", "Прогулка по территории ЖК. Смена времени суток и точки интереса используют функции общего ядра UE5."),
+        work("walkQuickNavigation", "Быстрая навигация по точкам", "Переход к выбранной точке на территории ЖК во время прогулки."),
+        work("walkMinimap", "Миникарта с навигацией по точкам", "Миникарта территории с переходами к точкам и возможностью открыть её на весь экран."),
+      ], { subgroup: true }),
+    ],
+  },
+  queue: {
+    WEB: [
+      group("Сборка сцены", "blue", [
+        work("scene", "Сборка 3D-сцены под WEB", "Подготовка генплана, корпусов и благоустройства на основе исходной 3D-модели. Оптимизация геометрии и текстур.", true, [100000,260000]),
+        work("render", "Рендеры генплана, двора и инфраструктуры", "Ракурсы генплана с материалами и освещением для браузерного макета.", true, [100000,140000]),
+        work("maf", "Детализация МАФ в WEB", "Доработка малых архитектурных форм и подготовка их отображения в браузере."),
+        work("surround", "Детализация окружения в WEB", "Подготовка отображения зданий, дорог и озеленения вокруг комплекса."),
+      ]),
+      group("Привязка к генплану", "violet", [
+        work("link", "Привязка квартир к корпусам и секциям", "Данные о квартирах берутся из CRM заказчика по данному объекту и сопоставляются с корпусами и секциями на генплане.", true),
+        work("facade", "Выбор квартир на фасаде", "Маски, контуры и подсветка квартир на 3D-модели.", false, [60000,280000]),
+        work("cuts", "Поэтажные срезы", "2D-планы этажей на 3D-модели с выбором квартир.", false, [90000,330000]),
+      ]),
+    ],
+    UE5: [
+      group("3D-сцена комплекса", "blue", [
+        work("facades", "Детальное моделирование фасадов и оптимизация под сцену", "Геометрия фасадов и архитектурных элементов корпусов, подготовленная для работы в UE5.", true, [300000,700000]),
+        work("masterplan", "Генплан и благоустройство территории ЖК", "Рельеф, покрытия, озеленение, дорожки и площадки.", true, [300000,480000]),
+        work("maf", "Моделирование МАФ для благоустройства", "Скамейки, урны, оборудование площадок и другие малые архитектурные формы.", true, [100000,180000]),
+        withVariants(
+          work("overview", "Обзорное окружение ЖК до 2 км", "Здания, дороги и озеленение вокруг ЖК. Для обзорной зоны можно выделить узнаваемые здания и ориентиры.", true),
+          "Тип обзорного окружения",
+          [["general", "Общее, без детализации"], ["recognizable", "Детализированное, с узнаваемыми объектами"]],
+        ),
+        withVariants(
+          work("surround", "Детализированное окружение рядом с ЖК", "Проработка ближайших зданий, улиц и озеленения. В базу входит 300 м. Радиус можно увеличить, в смету входит цена выбранного варианта.", true, [500000,700000]),
+          "Радиус детализированного окружения",
+          [["300m", "300 м · база"], ["600m", "600 м"], ["800m", "800 м"], ["1000m", "1 000 м"]],
+        ),
+        ...[
+          {
+            ...work("trafficCars", "Авто", "Анимация движения автомобилей по дорогам и проездам ЖК."),
+            replaces: "traffic",
+          },
+          {
+            ...work("trafficPeople", "Люди", "Анимация движения людей по дворам и пешеходным дорожкам."),
+            replaces: "traffic",
+          },
+          work("trafficVegetation", "Растительность", "Анимация деревьев, кустарников и травы на ветру."),
+          {
+            ...work("traffic", "Авто и люди · общая цена из прошлой сметы", "Сохранённая общая цена действует, пока авто и люди объединены в этой позиции. При выборе отдельной строки её стоимость считается отдельно.", false, [80000,120000]),
+            legacyTraffic: true,
+          },
+        ].map(item => ({ ...item, subgroup: "Трафик и анимации" })),
+      ]),
+      group("Интерфейс и программная часть", "violet", [
+        work("light", "Настройка материалов и освещения", "Материалы объектов, свет и тени 3D-сцены.", true, [300000,380000]),
+        work("link", "Привязка квартир к корпусам и секциям", "Данные о квартирах берутся из CRM заказчика по данному объекту и сопоставляются с корпусами и секциями на генплане.", true),
+        ...[
+          {
+            ...work("apartmentPoi", "POI квартир на 3D-модели", "Интерактивные боксы со статусами «Доступно», «Продано» и «Забронировано». Один POI на квартиру."),
+            perApartment: true,
+            propertyMethod: true,
+          },
+          {
+            ...work("cuts", "Поэтажные срезы и планы этажей", "Просмотр квартир на срезе этажа с контурами, подсветкой и открытием карточки квартиры.", false, [200000,750000]),
+            propertyMethod: true,
+          },
+          {
+            ...work("apartmentList", "Показ квартир списком", "Список квартир сгруппирован по типовым планировкам. В каждой группе можно посмотреть варианты планировки. Сортировка по этажу, площади и стоимости доступна по возрастанию и убыванию."),
+            propertyMethod: true,
+          },
+          {
+            ...work("roomAnnotations", "Аннотации помещений на срезах", "Внутри квартиры отображаются точки с аннотациями по помещениям. Опция доступна при выбранных поэтажных срезах."),
+            requires: ["cuts"],
+          },
+          {
+            ...work("cutFurniture", "Показ и скрытие мебели на срезах", "Переключатель мебели в помещениях на поэтажных срезах. Доступно при выбранных срезах и меблированных интерьерах в этой очереди."),
+            requires: ["cuts", "interiors"],
+            furnishedOnly: true,
+          },
+        ].map(item => ({ ...item, subgroup: "Подбор недвижимости" })),
+      ], { includeObjectWorks: true }),
+      group("Дополнительно · Интерьеры, МОП и паркинг", "amber", [
+        extra("interiors", "Интерьеры квартир", "Моделирование помещений, материалов и освещения в выбранном варианте отделки.",
+          designOptionsWithWhiteBox),
+        ...walkOptions("interiors", [
+          work("interiorMinimap", "Кликабельная миникарта", "Миникарта квартиры с переходом в выбранное помещение по нажатию."),
+          work("interiorRoomNavigation", "Быстрая навигация по помещениям", "Точки быстрого перехода между помещениями квартиры."),
+          {
+            ...work("interiorFurniture", "Показ и скрытие мебели", "Переключатель мебели в интерьерной сцене. Доступно для меблированных вариантов интерьера."),
+            furnishedOnly: true,
+          },
+          work("interiorTvVideo", "Видеоролик на ТВ по брендбуку", "Подготовка брендированного видеоролика для показа на экране телевизора в интерьерной сцене."),
+        ]),
+        extra("commonAreas", "Места общего пользования (МОП)", "Моделирование входных групп, лобби, холлов и других согласованных помещений.",
+          designOptionsWithWhiteBox),
+        ...walkOptions("commonAreas", [
+          work("commonAreasMinimap", "Миникарта", "Миникарта мест общего пользования для ориентации во время прогулки."),
+          work("commonAreasApartmentLabels", "Аннотационные плашки квартир", "Кликабельные плашки у квартир в МОП. По нажатию открывается просмотр выбранной квартиры с возможностью перейти к виртуальной прогулке по ней."),
+        ]),
+        extra("parking", "Паркинг", "Моделирование въездов, проездов, машиномест и лифтовых холлов."),
+        ...walkOptions("parking", [
+          work("parkingWalk", "Прогулка по паркингу", "Свободная прогулка по проездам и проходам паркинга."),
+          work("parkingMinimap", "Миникарта", "Миникарта для ориентации во время прогулки по паркингу."),
+          work("parkingQuickNavigation", "Быстрое перемещение по точкам", "Переходы к входам, выходам и секциям паркинга."),
+        ]),
+      ]),
+    ],
+  },
+};
+</script>
+<script id="visual-library-script">const visualLibrary = /* EMBEDDED_VISUALS */ {};</script>
+<script id="app-script">
+"use strict";
+
+const offer = globalThis.inegoOffer ?? null;
+const storageKey = offer ? "inego-kp-client-" + offer.id : "inego-suvorov-kp-v1";
+const maxCost = 999999999;
+const maxApartments = 999999;
+const maxClipSize = 1024 * 1024;
+const whole = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
+const percent = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
+const propertyRequirement = "Для каждой очереди выберите хотя бы один способ подбора из трёх.";
+const workAccents = {
+  interiors: "violet",
+  commonAreas: "green",
+  parking: "blue",
+  "Подбор недвижимости": "violet",
+  "Инфраструктура": "blue",
+  "Территория ЖК": "green",
+};
+const rub = value => whole.format(value) + " ₽";
+const qs = selector => document.querySelector(selector);
+const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
+const emptyWorks = () => ({ WEB: {}, UE5: {} });
+const makeQueue = number => ({ id: "queue-" + number, name: "Очередь " + number, apartments: null, works: emptyWorks() });
+const makeObject = number => ({
+  id: "object-" + number, name: "Объект " + number, discountBps: 0, nextQueue: 2,
+  works: emptyWorks(), queues: [makeQueue(1)],
+});
+
+function copyScopePrices(type, source, target, includeChoices) {
+  let copied = 0;
+  for (const [service, groups] of Object.entries(catalog[type])) {
+    for (const { items } of groups) {
+      for (const item of items) {
+        const earlier = source[service][item.key];
+        if (!earlier) continue;
+        const current = entryFor(target, service, item.key);
+        const fields = item.perApartment ? ["price_unit"] : item.variants ? item.variants.map(([key]) => "price_" + key)
+          : service === "WEB" ? ["price", "bundlePrice"] : ["price"];
+        for (const field of fields) {
+          if (validRate(earlier[field]) && !validRate(current[field])) {
+            current[field] = earlier[field];
+            copied++;
+          }
+        }
+        if (includeChoices) {
+          if (typeof earlier.selected === "boolean") current.selected = earlier.selected;
+          if (item.variants?.some(([key]) => key === earlier.variant)) current.variant = earlier.variant;
+        }
+      }
+    }
+  }
+  return copied;
+}
+
+function copyObjectPrices(source, target, includeChoices = false) {
+  const shared = copyScopePrices("object", objectScope(source).works, objectScope(target).works, includeChoices);
+  return target.queues.reduce((count, queue, index) =>
+    count + copyScopePrices("queue", (source.queues[index] ?? source.queues[0]).works, queue.works, includeChoices), shared);
+}
+
+function hasObjectPrices(object) {
+  const works = [objectScope(object).works, ...object.queues.map(queue => queue.works)];
+  return works.some(scope => Object.values(scope).some(service =>
+    Object.values(service).some(entry => Object.entries(entry).some(([field, value]) =>
+      (field === "price" || field === "bundlePrice" || field.startsWith("price_")) && validRate(value)
+    ))
+  ));
+}
+
+function newState() {
+  if (offer) return structuredClone(offer.state);
+  if (globalThis.inegoEditorSeed) return structuredClone(globalThis.inegoEditorSeed);
+  return {
+    city: "Суворов", project: "", mode: "both",
+    common: emptyWorks(), nextObject: 3, objects: [makeObject(1), makeObject(2)], schemaVersion: 6,
+  };
+}
+
+function migrateCommonAreasWhiteBox(saved) {
+  for (const object of saved.objects) {
+    for (const queue of object.queues) {
+      const works = queue.works.UE5;
+      const legacy = works.commonAreasWhiteBox;
+      if (!legacy) continue;
+      const commonAreas = works.commonAreas ??= {};
+      if (validRate(legacy.price) && !validRate(commonAreas.price_whiteBox)) commonAreas.price_whiteBox = legacy.price;
+      if (legacy.selected && commonAreas.selected) commonAreas.variant = "whiteBox";
+      delete works.commonAreasWhiteBox;
+    }
+  }
+  const previousVisual = saved.media?.["UE5:commonAreasWhiteBox"];
+  if (previousVisual) {
+    saved.media["UE5:commonAreas:whiteBox"] ??= previousVisual;
+    delete saved.media["UE5:commonAreasWhiteBox"];
+  }
+}
+
+function migrateApartmentList(saved) {
+  const previous = saved.common.UE5.apartmentList;
+  if (!previous) return;
+  const works = saved.objects[0].queues[0].works.UE5;
+  const current = works.apartmentList ??= {};
+  if (validRate(previous.price) && !validRate(current.price)) current.price = previous.price;
+  if (current.selected === undefined && typeof previous.selected === "boolean") current.selected = previous.selected;
+  delete saved.common.UE5.apartmentList;
+}
+
+function migrateWindowView(saved) {
+  const entries = [];
+  for (const object of saved.objects) {
+    for (const { works } of object.queues) {
+      const entry = works.UE5.interiorWindowView;
+      if (!entry) continue;
+      entries.push(entry);
+      delete works.UE5.interiorWindowView;
+    }
+  }
+  const previous = entries.find(entry => entry.selected === true) ?? entries.find(entry => validRate(entry.price));
+  if (previous) saved.common.UE5.interiorWindowView ??= previous;
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey));
+    if (saved && saved.objects?.length && saved.common && ["WEB","UE5","both"].includes(saved.mode)) {
+      if (!saved.schemaVersion) {
+        for (const object of saved.objects) {
+          for (const queue of object.queues) {
+            const surround = queue.works.UE5.surround;
+            if (surround && !surround.selected) delete surround.variant;
+          }
+        }
+        saved.schemaVersion = 2;
+      }
+      if (saved.schemaVersion < 3 && !offer) {
+        saved.objects.forEach((object, index) => {
+          if (index > 0 && !hasObjectPrices(object)) copyObjectPrices(saved.objects[index - 1], object);
+        });
+        saved.schemaVersion = 3;
+      }
+      if (saved.schemaVersion < 4 && !offer) {
+        migrateCommonAreasWhiteBox(saved);
+        saved.schemaVersion = 4;
+      }
+      if (saved.schemaVersion < 5 && !offer) {
+        migrateApartmentList(saved);
+        saved.schemaVersion = 5;
+      }
+      if (saved.schemaVersion < 6 && !offer) {
+        migrateWindowView(saved);
+        saved.schemaVersion = 6;
+        try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch {}
+      }
+      return saved;
+    }
+  } catch {}
+  return newState();
+}
+
+const state = loadState();
+let inspectedWork = null;
+let mediaMessage = null;
+
+function save() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(state));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function activeServices() {
+  return state.mode === "both" ? ["WEB","UE5"] : [state.mode];
+}
+
+function workScope(queue, object) {
+  return queue ? { type: "queue", works: queue.works, queue, object } : { type: "common", works: state.common };
+}
+
+function objectScope(object) {
+  return { type: "object", object, works: object.works ??= emptyWorks() };
+}
+
+function editorScope(element) {
+  const objectId = element.closest("[data-editor-object]")?.dataset.editorObject;
+  const queueId = element.closest("[data-editor-queue]")?.dataset.editorQueue;
+  const object = state.objects.find(entry => entry.id === objectId);
+  const queue = object?.queues.find(entry => entry.id === queueId);
+  return { object, queue };
+}
+
+function scopeWorks(element) {
+  const { object, queue } = editorScope(element);
+  return object && element.closest("[data-object-works]") ? objectScope(object) : workScope(queue, object);
+}
+
+function objectName(object) {
+  return object.name.trim() || "Объект " + object.id.split("-").at(-1);
+}
+
+function queueName(queue) {
+  return queue.name.trim() || "Очередь " + queue.id.split("-").at(-1);
+}
+
+function selectedVariant(works, service, item) {
+  if (!item.variants) return null;
+  const saved = works[service][item.key]?.variant;
+  return item.variants.find(([key]) => key === saved) ?? item.variants[0];
+}
+
+function flyoverRadius(object) {
+  const surroundings = catalog.queue.UE5.flatMap(group => group.items).find(item => item.key === "surround");
+  const radii = object.queues.map(queue => {
+    const [, label] = selectedVariant(queue.works, "UE5", surroundings);
+    return { name: queueName(queue), radius: label.split(" · ")[0] };
+  });
+  return radii.every(entry => entry.radius === radii[0].radius)
+    ? "Радиус подлёта · до " + radii[0].radius + "."
+    : "Радиус по очередям · " + radii.map(({ name, radius }) => name + " — до " + radius).join(" / ") + ".";
+}
+
+function workDetail(scope, item) {
+  return item.key === "infrastructureFlyover" ? item.detail + " " + flyoverRadius(scope.object) : item.detail;
+}
+
+function rateKey(service, item, variant) {
+  if (item.perApartment) return "price_unit";
+  if (variant) return "price_" + variant[0];
+  return service === "WEB" && state.mode === "both" ? "bundlePrice" : "price";
+}
+
+function rateOf(works, service, item, field = rateKey(service, item, selectedVariant(works, service, item))) {
+  const rate = works[service][item.key]?.[field];
+  return validRate(rate) ? rate : null;
+}
+
+function apartmentCount(queue) {
+  const count = queue?.apartments;
+  return Number.isInteger(count) && count >= 0 && count <= maxApartments ? count : null;
+}
+
+function poiBilling(scope, service, item) {
+  const apartments = apartmentCount(scope.queue);
+  const rate = rateOf(scope.works, service, item);
+  const amount = apartments === 0 ? 0 : apartments === null || rate === null ? null : apartments * rate;
+  return { apartments, rate, amount };
+}
+
+function poiCalculation(billing) {
+  const { apartments, rate, amount } = billing;
+  const rateLabel = "Цена за 1 POI · " + (rate === null ? "уточняется" : rub(rate));
+  if (apartments === null) return "Количество квартир уточняется. " + rateLabel + ".";
+  const quantity = whole.format(apartments) + " POI";
+  if (rate !== null) return quantity + " × " + rub(rate) + " = " + rub(amount) + ".";
+  return quantity + " · " + (apartments === 0 ? rub(0) : rateLabel) + ".";
+}
+
+function priceOf(scope, service, item, field) {
+  return item.perApartment ? poiBilling(scope, service, item).amount : rateOf(scope.works, service, item, field);
+}
+
+const ue5Dependents = {
+  cityMap: "cityFilter",
+};
+
+function canSelect(works, service, item) {
+  const entries = works[service];
+  return (!item.requires || item.requires.every(key => entries[key]?.selected === true)) &&
+    (!item.furnishedOnly || entries.interiors?.variant !== "whiteBox");
+}
+
+function isSelected(works, service, item) {
+  if (!canSelect(works, service, item)) return false;
+  const dependent = service === "UE5" ? ue5Dependents[item.key] : undefined;
+  return item.required || works[service][item.key]?.selected === true ||
+    Boolean(dependent && works[service][dependent]?.selected);
+}
+
+function objectSections(object) {
+  const name = objectName(object);
+  return [
+    { title: name + " · Работы по объекту", ...objectScope(object) },
+    ...object.queues.map(queue => ({ title: name + " · " + queueName(queue), ...workScope(queue, object) })),
+  ];
+}
+
+function sections() {
+  return [{ title: "Общий функционал", ...workScope() }, ...state.objects.flatMap(objectSections)];
+}
+
+function hasPropertySelection(queue) {
+  const works = queue.works.UE5;
+  return ["apartmentPoi", "cuts", "apartmentList"].some(key => works[key]?.selected === true);
+}
+
+function missingPropertySelections() {
+  if (!activeServices().includes("UE5")) return [];
+  return state.objects.flatMap(object => object.queues
+    .filter(queue => !hasPropertySelection(queue))
+    .map(queue => ({ object, queue })));
+}
+
+function requirePropertySelection() {
+  const first = missingPropertySelections()[0];
+  if (!first) return true;
+  const { object, queue } = first;
+  if (qs("#quote-dialog").open) qs("#quote-dialog").close();
+  const rule = document.getElementById("property-rule-" + object.id + "-" + queue.id);
+  rule?.scrollIntoView({ block: "center" });
+  rule?.focus({ preventScroll: true });
+  return false;
+}
+
+function groupRows(scope, service, category, includeObjectWorks = false) {
+  const rows = category.items.filter(item => !item.legacyTraffic || isSelected(scope.works, service, item))
+    .map(item => ({ scope, item, subgroup: item.subgroup }));
+  if (!includeObjectWorks) return rows;
+  if (category.includeObjectWorks && scope.queue === scope.object?.queues[0]) {
+    const shared = objectScope(scope.object);
+    for (const group of catalog.object[service]) {
+      const subgroupBase = group.subgroup && group.items.some(item => item.required);
+      rows.push(...group.items.map(item => ({
+        scope: shared, item, subgroup: group.subgroup ? group.title : undefined, subgroupBase,
+      })));
+    }
+  }
+  const standalone = rows.filter(row => !row.subgroup);
+  return [...standalone.filter(({ item }) => item.required), ...standalone.filter(({ item }) => !item.required),
+    ...rows.filter(row => row.subgroup)];
+}
+
+function startsSubgroup(row, index, rows) {
+  return row.subgroup && row.subgroup !== rows[index - 1]?.subgroup;
+}
+
+function rowTotals(rows, service, field) {
+  return rows.reduce((result, { scope, item }) => {
+    if (!isSelected(scope.works, service, item)) return result;
+    const price = priceOf(scope, service, item, field);
+    result.amount += price ?? 0;
+    result.missing += price === null ? 1 : 0;
+    result.count++;
+    return result;
+  }, { amount: 0, missing: 0, count: 0 });
+}
+
+function extraGroupTotal(rows, service, key) {
+  return rowTotals(rows.filter(({ item }) => item.extraGroup === key), service);
+}
+
+function totals(scope, service, field) {
+  const rows = catalog[scope.type][service].flatMap(category => groupRows(scope, service, category));
+  return rowTotals(rows, service, field);
+}
+
+function sheetTotals(scope, service, field, category) {
+  const groups = category ? [category] : catalog[scope.type][service];
+  return rowTotals(groups.flatMap(group => groupRows(scope, service, group, true)), service, field);
+}
+
+function sheetTotal(scope, services) {
+  return services.map(service => sheetTotals(scope, service))
+    .reduce(extendTotals, { amount: 0, missing: 0, count: 0 });
+}
+
+function extendTotals(result, entry) {
+  return { amount: result.amount + entry.amount, missing: result.missing + entry.missing, count: result.count + entry.count };
+}
+
+function sectionTotal(scope, services) {
+  return services.map(service => totals(scope, service))
+    .reduce(extendTotals, { amount: 0, missing: 0, count: 0 });
+}
+
+function allTotals(service) {
+  return sections().reduce((result, section) => extendTotals(result, totals(section, service)),
+    { amount: 0, missing: 0, count: 0 });
+}
+
+function discountBps(object) {
+  const rate = object.discountBps;
+  return Number.isInteger(rate) && rate >= 0 && rate <= 10000 ? rate : 0;
+}
+
+function discountLabel(rate) {
+  return percent.format(rate / 100) + "%";
+}
+
+function objectPricing(object, services) {
+  const gross = objectSections(object).map(scope => sectionTotal(scope, services))
+    .reduce(extendTotals, { amount: 0, missing: 0, count: 0 });
+  const rate = discountBps(object);
+  const discount = Math.round(gross.amount * rate / 10000);
+  return { object, gross, rate, discount, net: { ...gross, amount: gross.amount - discount } };
+}
+
+function estimatePricing(services) {
+  const byService = services.map(service => [service, allTotals(service)]);
+  const gross = byService.map(([, totals]) => totals).reduce(extendTotals, { amount: 0, missing: 0, count: 0 });
+  const objects = state.objects.map(object => objectPricing(object, services));
+  const discounted = objects.filter(entry => entry.rate > 0);
+  const discount = discounted.reduce((sum, entry) => sum + entry.discount, 0);
+  return { byService, gross, objects, discounted, discount, net: { ...gross, amount: gross.amount - discount } };
+}
+
+function amountText(total) {
+  return total.count === total.missing ? "—" : rub(total.amount);
+}
+
+function discountText(discount, total) {
+  return total.count === total.missing ? "—" : (discount ? "−" : "") + rub(discount);
+}
+
+function objectTotalsMarkup({ gross, rate, discount, net }, totalLabel = "Итого по объекту") {
+  const cell = (label, amount, primary = false) => '<div' + (primary ? ' class="object-total-primary"' : '') +
+    '><span>' + label + '</span><strong>' + amount + '</strong></div>';
+  return (rate ? cell("До скидки", amountText(gross)) + cell("Скидка " + discountLabel(rate), discountText(discount, gross)) : "") +
+    cell(rate ? "Итого со скидкой" : totalLabel, amountText(net), true) +
+    (gross.missing ? '<small>Позиций без цены · ' + gross.missing + '</small>' : "");
+}
+
+function subtotalText(total) {
+  return total.count ? amountText(total) : rub(0);
+}
+
+function subtotalMarkup(total) {
+  return "<strong>" + subtotalText(total) + "</strong>" +
+    (total.missing ? "<small>Без цены · " + total.missing + "</small>" : "");
+}
+
+function clientObjectSectionPrices(object, services, rate) {
+  const showQueues = object.queues.length > 1;
+  const showServices = services.length > 1;
+  const priceRow = (title, total, extra = false) => '<div class="client-section-price' +
+    (extra ? ' client-section-price-extra' : '') + '"><span>' + escapeHtml(title) +
+    '</span><span class="sum-value">' + subtotalMarkup(total) + '</span></div>';
+  const rows = object.queues.map(queue => {
+    const scope = workScope(queue, object);
+    return services.map(service => {
+      const name = [showQueues ? queueName(queue) : "", showServices ? service : ""].filter(Boolean).join(" · ");
+      const heading = name ? '<p class="client-section-price-note">' + escapeHtml(name) + '</p>' : '';
+      return heading + catalog.queue[service].map(category => {
+        const categoryRows = groupRows(scope, service, category, true);
+        const extras = category.items.filter(item => item.extraGroup && !item.parentWork);
+        return priceRow(category.title, rowTotals(categoryRows, service)) +
+          extras.map(item => priceRow(item.title, extraGroupTotal(categoryRows, service, item.extraGroup), true)).join("");
+      }).join("");
+    }).join("");
+  }).join("");
+  return '<div class="client-section-prices"><p class="client-section-price-note">' +
+    (rate ? 'Стоимость разделов до скидки' : 'Стоимость разделов') + '</p>' + rows + '</div>';
+}
+
+function renderSummary() {
+  const services = activeServices();
+  const missingMethods = missingPropertySelections().length;
+  const { byService, gross, objects, discounted, discount, net } = estimatePricing(services);
+  const hasDiscounts = discounted.length > 0;
+  const summaryLine = (label, value, className = "") => '<div class="estimate-stat' + (className ? " " + className : "") +
+    '"><span>' + label + '</span><strong>' + value + '</strong></div>';
+  const queues = state.objects.reduce((number, object) => number + object.queues.length, 0);
+  let priceLines = byService.map(([service, value]) => summaryLine(service + (hasDiscounts ? " до скидок" : ""), amountText(value)));
+  if (offer) {
+    const common = workScope();
+    priceLines = [
+      ...services.map(service => summaryLine("Функциональная часть " + service, subtotalText(totals(common, service)), "client-service-price")),
+      ...objects.map(({ object, net, rate }) => '<a class="estimate-stat client-object-price" href="#estimate-' + object.id + '">' +
+        '<span><b>' + escapeHtml(objectName(object)) + '</b>' + (rate ? '<small>Со скидкой ' + discountLabel(rate) + '</small>' : '') +
+        '</span><strong>' + subtotalText(net) + '</strong></a>' + clientObjectSectionPrices(object, services, rate)),
+    ];
+  }
+  const summary = qs("#summary");
+  const scrollTop = summary.scrollTop;
+  summary.innerHTML = [
+    offer ? "" : summaryLine("Объекты / очереди", state.objects.length + " / " + queues),
+    ...priceLines,
+    !offer && hasDiscounts ? summaryLine("Смета до скидок", amountText(gross)) + summaryLine("Скидки на объекты", discountText(discount, gross)) : "",
+    missingMethods ? '<button type="button" class="missing property-warning" data-action="property-rule">Очередей без способа подбора · <strong>' +
+      missingMethods + '</strong></button>' : "",
+    net.missing ? '<p class="missing">Позиции без цены&nbsp;·&nbsp;<strong>' + net.missing + "</strong></p>" : "",
+  ].join("");
+  if (scrollTop) summary.scrollTop = scrollTop;
+  const totalLabel = missingMethods ? "Предварительная сумма" : net.missing ? (hasDiscounts ? "По указанным ценам со скидками" : "Сумма по указанным ценам")
+    : (hasDiscounts ? "Итого по КП со скидками" : "Итого по КП");
+  const showTotalLabel = !offer || missingMethods || net.missing || hasDiscounts;
+  qs("#sum-total").innerHTML = (showTotalLabel ? "<span>" + totalLabel + "</span>" : "") + "<strong>" + amountText(net) + "</strong>";
+  if (offer) {
+    qs("#client-sidebar-label").textContent = missingMethods ? "Предварительная стоимость" :
+      net.missing ? "Итог по указанным ценам" : "Итоговая стоимость";
+    qs("#client-sidebar-amount").textContent = amountText(net);
+  }
+
+  const objectTotalLabel = offer ? "Стоимость объекта" + (services.length === 1 ? " " + services[0] : "") : undefined;
+  for (const totals of objects) {
+    const element = qs('[data-object-totals="' + totals.object.id + '"]');
+    if (element) element.innerHTML = objectTotalsMarkup(totals, objectTotalLabel);
+  }
+
+  for (const element of document.querySelectorAll("[data-subtotal]")) {
+    const scope = scopeWorks(element);
+    const { subtotal: service, groupIndex, subtotalField, subgroup } = element.dataset;
+    const category = catalog[scope.type][service]?.[groupIndex];
+    const rows = subgroup ? catalog[scope.type][service].flatMap(group => groupRows(scope, service, group, true))
+      .filter(row => row.subgroup === subgroup) : null;
+    const subtotal = service === "all" ? sheetTotal(scope, services)
+      : rows ? rowTotals(rows, service) : sheetTotals(scope, service, subtotalField, category);
+    element.innerHTML = subtotalMarkup(subtotal);
+  }
+  for (const element of document.querySelectorAll("[data-poi-calculation]")) {
+    const scope = scopeWorks(element);
+    const item = catalog.queue.UE5.flatMap(category => category.items).find(item => item.perApartment);
+    element.textContent = poiCalculation(poiBilling(scope, "UE5", item));
+  }
+  for (const element of document.querySelectorAll("[data-flyover-radius]")) {
+    element.textContent = flyoverRadius(scopeWorks(element).object);
+  }
+  if (offer) markClientObjectPrice();
+}
+
+function markClientObjectPrice() {
+  const readingLine = Math.max(76, qs("#contexts").getBoundingClientRect().bottom + 32);
+  const current = Array.from(qs("#catalog").querySelectorAll(".estimate-object")).find(section => {
+    const { top, bottom } = section.getBoundingClientRect();
+    return top <= readingLine && readingLine < bottom;
+  });
+  for (const link of qs("#summary").querySelectorAll(".client-object-price")) {
+    if (current && link.hash === "#" + current.id) {
+      if (!link.hasAttribute("aria-current")) link.setAttribute("aria-current", "location");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  }
+}
+
+function markClientContext() {
+  const destination = location.hash || "#estimate-all";
+  qs("#contexts").querySelectorAll("a").forEach(link => {
+    if (link.hash === destination) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+function renderContexts() {
+  const links = '<a class="context" href="#estimate-common">Общий функционал</a>' +
+    state.objects.map(object => '<a class="context" data-jump="' + object.id + '" href="#estimate-' + object.id + '" title="' +
+      escapeHtml(objectName(object)) + '">' + escapeHtml(objectName(object)) + '</a>').join("");
+  qs("#contexts").innerHTML = offer ? '<a class="context" href="#estimate-all">Все</a>' + links :
+    links + '<button class="context add" type="button" data-action="add-object">+ Объект</button>';
+  if (offer) markClientContext();
+}
+
+function validRate(rate) {
+  return Number.isInteger(rate) && rate >= 0 && rate <= maxCost;
+}
+
+function rateInput(works, service, item, field, label) {
+  const rate = works[service][item.key]?.[field];
+  return '<label class="price"><span aria-hidden="true">₽</span><input type="text" inputmode="numeric" maxlength="15" autocomplete="off" data-price="' + item.key +
+    '" data-price-field="' + field + '" data-service="' + service + '" aria-label="' + escapeHtml(label) + '" placeholder="Цена" value="' +
+    (validRate(rate) ? whole.format(rate) : "") + '"></label>';
+}
+
+function workScopeText(works, service, item) {
+  return works[service][item.key]?.scopeText?.trim() || "";
+}
+
+function mediaSlot(service, item, variant) {
+  return service + ":" + item.key + (variant ? ":" + variant : "");
+}
+
+function visualFor(slot) {
+  const custom = state.media?.[slot];
+  if (custom) return custom;
+  const visual = visualLibrary.slots?.[slot];
+  const src = visualLibrary.images?.[visual];
+  return src ? { kind: "image", src, caption: visualLibrary.captions?.[visual] ?? "Пример из исходного КП" } : null;
+}
+
+function mediaControls(slot, label, allowVideo = false) {
+  if (offer) return "";
+  const accept = "image/jpeg,image/png,image/webp,image/gif" + (allowVideo ? ",video/mp4,video/webm" : "");
+  const mediaLabel = allowVideo ? "Загрузить фото, GIF или видео" : visualFor(slot) ? "Заменить фото" : "Добавить фото";
+  return '<label class="media-control">' + mediaLabel +
+    '<input class="sr-only" type="file" data-media-slot="' + slot + '" accept="' + accept + '" aria-label="' +
+    escapeHtml(mediaLabel + ", " + label) + '"' + (allowVideo ? ' data-allow-video' : '') + '></label>' +
+    (state.media?.[slot] ? '<button type="button" class="media-control" data-reset-media="' + slot + '">Сбросить</button>' : '') +
+    (mediaMessage?.slot === slot ? '<span class="media-status" role="status">' + escapeHtml(mediaMessage.text) + '</span>' : '');
+}
+
+function infoAttributes(service, item, variant) {
+  return ' data-info-key="' + item.key + '" data-service="' + service + '"' +
+    (variant ? ' data-info-variant="' + variant + '"' : '') + ' aria-haspopup="dialog" aria-controls="work-info-dialog"';
+}
+
+function workInfoShell() {
+  return '<dialog id="work-info-dialog" class="work-inspector" aria-labelledby="work-info-title">' +
+    '<div class="dialog-bar"><span class="eyebrow">Описание работы</span>' +
+    '<button type="button" class="button secondary" data-action="close-work-info">Закрыть</button></div>' +
+    '<div class="work-info-content" id="work-info-content"></div></dialog>' +
+    '<dialog id="work-image-dialog" class="work-image-viewer" aria-labelledby="work-image-title">' +
+    '<div class="dialog-bar"><h2 id="work-image-title">Пример работы</h2>' +
+    '<button type="button" class="button secondary" data-action="close-work-image">Закрыть</button></div>' +
+    '<img alt="Пример работы"></dialog>';
+}
+
+function renderWorkInfo() {
+  const { scope, item, service, key } = inspectedWork;
+  const { works } = scope;
+  const active = selectedVariant(works, service, item);
+  const variant = item.variants?.find(([value]) => value === key) ?? active;
+  const slot = mediaSlot(service, item, key);
+  const visual = state.media?.[slot] ??
+    (variant ? visualFor(mediaSlot(service, item, variant[0])) : null) ?? visualFor(slot);
+  const price = key && variant !== active ? rateOf(works, service, item, "price_" + key) : priceOf(scope, service, item);
+  const terms = item.perApartment ? poiCalculation(poiBilling(scope, service, item)) : price === null ? "" : "Стоимость · " + rub(price);
+  const notes = workScopeText(works, service, item);
+  const figure = visual ? '<figure class="info-visual">' +
+    (visual.kind === "video"
+      ? '<video src="' + escapeHtml(visual.src) + '" controls playsinline preload="metadata" aria-label="Пример работы"></video>'
+      : '<button type="button" class="info-image-button" data-action="open-work-image" aria-label="Увеличить изображение" ' +
+        'aria-haspopup="dialog" aria-controls="work-image-dialog"><img src="' + escapeHtml(visual.src) + '" alt=""></button>') +
+    '<figcaption>' + escapeHtml(visual.caption ?? "Пример работы") + '</figcaption></figure>'
+    : "";
+  const controls = mediaControls(slot, item.title, !key);
+  qs("#work-info-content").innerHTML =
+    '<div class="eyebrow">' + service + '</div><h2 id="work-info-title">' + escapeHtml(item.title) + '</h2>' +
+    '<p>' + escapeHtml(workDetail(scope, item)) + '</p>' +
+    (variant ? '<p class="info-visual-note">' + escapeHtml(variant[1]) + '</p>' : '') +
+    (notes ? '<p>' + escapeHtml(notes) + '</p>' : '') +
+    (terms ? '<p class="info-terms">' + escapeHtml(terms) + '</p>' : '') + figure +
+    (controls ? '<div class="info-media-actions">' + controls + '</div>' : '');
+}
+
+function openWorkInfo(button) {
+  const scope = scopeWorks(button);
+  const { service, infoKey, infoVariant } = button.dataset;
+  const item = catalog[scope.type][service].flatMap(group => group.items).find(entry => entry.key === infoKey);
+  inspectedWork = { scope, item, service, key: infoVariant };
+  renderWorkInfo();
+  qs("#work-info-dialog").showModal();
+}
+
+function openWorkImage(button) {
+  const viewer = qs("#work-image-dialog");
+  viewer.querySelector("img").src = button.querySelector("img").src;
+  viewer.showModal();
+}
+
+function readDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Файл не удалось прочитать."));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function prepareMedia(file, allowVideo) {
+  const video = ["video/mp4", "video/webm"].includes(file.type);
+  if (file.type === "image/gif" || (video && allowVideo)) {
+    if (file.size > maxClipSize) throw new Error("Для GIF и видео доступен файл до 1 МБ.");
+    return { kind: video ? "video" : "image", src: await readDataUrl(file) };
+  }
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    throw new Error(allowVideo ? "Подойдут JPG, PNG, WebP, GIF, MP4 и WebM." : "Подойдут JPG, PNG, WebP и GIF.");
+  }
+  if (file.size > 20 * 1024 * 1024) throw new Error("Выберите фото размером до 20 МБ.");
+  const picture = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, 960 / Math.max(picture.width, picture.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(picture.width * scale));
+    canvas.height = Math.max(1, Math.round(picture.height * scale));
+    canvas.getContext("2d").drawImage(picture, 0, 0, canvas.width, canvas.height);
+    return { kind: "image", src: canvas.toDataURL("image/webp", 0.8) };
+  } finally {
+    picture.close();
+  }
+}
+
+function refreshMedia() {
+  renderCatalog();
+  renderSummary();
+  if (inspectedWork && qs("#work-info-dialog").open) renderWorkInfo();
+}
+
+function storeMedia(slot, value) {
+  const media = state.media ??= {};
+  const previous = media[slot];
+  if (value) media[slot] = value;
+  else delete media[slot];
+  if (save()) return;
+  if (previous) media[slot] = previous;
+  else delete media[slot];
+  throw new Error("Не хватило места для примера. Выберите файл меньшего размера.");
+}
+
+async function attachMedia(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const slot = input.dataset.mediaSlot;
+  try {
+    storeMedia(slot, await prepareMedia(file, input.hasAttribute("data-allow-video")));
+    mediaMessage = null;
+  } catch (error) {
+    mediaMessage = { slot, text: error.message || "Пример не удалось загрузить." };
+  }
+  refreshMedia();
+}
+
+function renderVariantChooser(works, service, item, scopeId, selected, variant) {
+  if (!variant) return "";
+  const cards = item.variants.map(([key, label]) => {
+    const slot = mediaSlot(service, item, key);
+    return { key, label, slot, visual: visualFor(slot) };
+  });
+  const illustrated = cards.some(card => card.visual);
+  return '<fieldset class="variant-chooser"><legend>' + escapeHtml(item.variantLabel) + '</legend>' +
+    '<div class="variant-grid" data-count="' + cards.length + '" style="--variant-count:' + cards.length + '">' +
+    cards.map(({ key, label, slot, visual }) => {
+      const field = "price_" + key;
+      const rate = rateOf(works, service, item, field);
+      const thumbnail = !illustrated ? "" : '<span class="variant-preview">' +
+        (visual?.kind === "image" ? '<img src="' + escapeHtml(visual.src) + '" loading="lazy" alt="">' :
+          (visual?.kind === "video" ? "Видео" : " ")) + '</span>';
+      const actions = (visual ? '<button type="button"' + infoAttributes(service, item, key) +
+        ' aria-label="' + escapeHtml("Посмотреть пример, " + label) + '">Пример</button>' : '') +
+        mediaControls(slot, label);
+      const price = offer ? '<span class="variant-price">' + (rate === null ? "Уточняется" : rub(rate)) + '</span>'
+        : rateInput(works, service, item, field, "Цена, " + item.title + ", " + label);
+      return '<div class="variant-card">' +
+        '<label class="variant-pick"><input class="sr-only" type="radio" name="' + scopeId + '-' + service + '-' + item.key +
+        '" data-variant="' + item.key + '" data-service="' + service + '" value="' + key + '"' +
+        (key === variant[0] ? ' checked' : '') + (offer && !selected ? ' disabled' : '') + '>' + thumbnail +
+        '<span class="variant-title">' + escapeHtml(label) + '</span>' + (offer ? price : '') + '</label>' +
+        (offer ? '' : price) +
+        (actions ? '<div class="variant-actions">' + actions + '</div>' : '') + '</div>';
+    }).join("") + '</div></fieldset>';
+}
+
+function accentAttribute(group) {
+  const accent = workAccents[group];
+  return accent ? ' data-work-accent="' + accent + '"' : '';
+}
+
+function renderWork({ scope, item, subgroup }, service, scopeId, parentInactive, extraTotal) {
+  const { works } = scope;
+  const selected = isSelected(works, service, item);
+  const price = priceOf(scope, service, item);
+  const name = escapeHtml(item.title);
+  const variant = selectedVariant(works, service, item);
+  const priceField = rateKey(service, item, variant);
+  const selectInput = item.required
+    ? '<span class="required-check" aria-hidden="true">' + (offer ? '' : '✓') + '</span>'
+    : '<input type="checkbox"' + (offer ? ' role="switch"' : '') + ' data-service="' + service + '" data-item="' + item.key + '" aria-label="Включить ' + name +
+      '"' + (selected ? " checked" : "") + (canSelect(works, service, item) ? "" : " disabled") + ">";
+  const badge = item.required ? "База" : "";
+  const pdfStatus = item.key === "projectPresentationPdf"
+    ? '<span class="base" data-pdf-status>' + (selected ? "Есть PDF" : "Нет PDF") + '</span>'
+    : "";
+  const flyover = item.key === "infrastructureFlyover"
+    ? '<span class="work-detail" data-flyover-radius>' + escapeHtml(flyoverRadius(scope.object)) + '</span>'
+    : "";
+  const variants = renderVariantChooser(works, service, item, scopeId, selected, variant);
+  const scopeText = workScopeText(works, service, item);
+  const scopeMarkup = !item.hasScopeText ? "" : offer
+    ? (scopeText ? '<p class="work-scope-text">Состав работ · ' + escapeHtml(scopeText) + '</p>' : '')
+    : '<label class="work-scope-text">Состав работ<input class="text-input" type="text" data-scope-text="' + item.key + '" data-service="' +
+      service + '" maxlength="220" placeholder="Например, какие помещения моделируем" value="' + escapeHtml(scopeText) + '"></label>';
+  const oldPrice = service === "UE5" && item.key === "surround" ? works.UE5.surround?.price : null;
+  const oldPriceNote = !offer && Number.isInteger(oldPrice)
+    ? '<p class="previous-price">Ранее указано ' + rub(oldPrice) + ' без радиуса. Укажите цену для выбранного радиуса.</p>'
+    : "";
+  const oldTraffic = !offer && item.key === "trafficCars" ? works[service].traffic : null;
+  const trafficNote = oldTraffic && !oldTraffic.selected && validRate(oldTraffic.price)
+    ? '<p class="previous-price">Прежняя общая цена авто и людей · ' + rub(oldTraffic.price) + '.</p>'
+    : "";
+  const previousPoiPrice = !offer && item.perApartment ? works[service][item.key]?.price : null;
+  const poiLegacyNote = validRate(previousPoiPrice)
+    ? '<p class="previous-price">Ранее была указана фиксированная сумма · ' + rub(previousPoiPrice) + '. Текущий расчёт использует тариф POI.</p>'
+    : "";
+  const poiFormula = item.perApartment
+    ? '<p class="poi-calculation" data-poi-calculation></p>' + poiLegacyNote
+    : "";
+  const rateLabel = "Цена, " + service + ", " + item.title;
+  const rateMarkup = variants ? "" : offer
+    ? '<span class="client-rate">' + (price === null ? 'Уточняется' : rub(price)) + '</span>'
+    : item.perApartment ? '<div><span class="poi-rate-label">Цена за 1 POI</span>' +
+      rateInput(works, service, item, priceField, "Цена за 1 POI") + '</div>'
+    : (service === "WEB" && state.mode === "both" ? rateInput(works, service, item, "price", rateLabel + " отдельно") : "") +
+      rateInput(works, service, item, priceField, rateLabel + (priceField === "bundlePrice" ? " с UE5" : ""));
+  const objectWork = scope.type === "object";
+  const clientExtra = extraTotal !== null;
+  return '<div class="work' + (variants ? " with-variants" : "") + (clientExtra ? " client-extra-work" : "") + '" data-active="' + selected + '" data-key="' + item.key + '"' +
+    (offer && item.required ? ' data-required' : '') +
+    (objectWork ? ' data-object-works' : '') + (subgroup ? ' data-work-subgroup' : '') +
+    (item.parentWork ? ' data-parent-work="' + item.parentWork + '"' : '') + parentInactive +
+    accentAttribute(item.extraGroup ?? subgroup) + (item.propertyMethod ? ' data-pick-method' : '') + '>' +
+    '<div class="work-main"><div class="work-label">' + selectInput + '<span>' +
+    '<button type="button" class="work-title" aria-label="Подробнее о работе «' + name + '»"' +
+    infoAttributes(service, item) + '>' + name + '<span class="work-info" aria-hidden="true">ⓘ</span></button>' +
+    (badge ? '<span class="base">' + badge + '</span>' : "") + pdfStatus +
+    '<span class="work-detail">' + escapeHtml(item.detail) + "</span>" + flyover + "</span>" +
+    (clientExtra ? '<span class="sum-value client-extra-total">' + subtotalMarkup(extraTotal) + '</span>' : '') +
+    '</div>' + variants + oldPriceNote + trafficNote + scopeMarkup + poiFormula +
+    '</div>' + rateMarkup + '</div>';
+}
+
+function subtotalCell(service, field, groupIndex, subgroup) {
+  return '<span class="sum-value" data-subtotal="' + service + '"' +
+    (field ? ' data-subtotal-field="' + field + '"' : '') +
+    (groupIndex !== undefined ? ' data-group-index="' + groupIndex + '"' : '') +
+    (subgroup ? ' data-subgroup="' + escapeHtml(subgroup) + '"' : '') + '></span>';
+}
+
+function renderSheets(scope, scopeId) {
+  const modeNote = state.mode === "both" ? "WEB при совместном заказе" : "Самостоятельный WEB";
+  const services = activeServices().filter(service => catalog[scope.type][service].length);
+  const objectLabel = offer ? scope.object?.name.trim() : "";
+  const worksTitle = objectLabel ? "Перечень работ для " +
+    (/^ЖК(?:\s|$)/i.test(objectLabel) ? objectLabel : "ЖК «" + objectLabel + "»") : "Перечень работ";
+  const sheets = services.map(service => {
+    const dual = !offer && service === "WEB" && state.mode === "both";
+    const serviceTitle = service === "WEB" && !dual ? modeNote : service;
+    const title = offer && scope.type === "queue" ? worksTitle + " · " + service : serviceTitle;
+    const serviceHeading = !offer ? "span" : scope.type === "common" ? "h3" : "h4";
+    const groupHeading = scope.type === "common" ? "h4" : "h5";
+    const clientCommonUe5 = offer && service === "UE5" && scope.type === "common";
+    return '<section class="sheet' + (dual ? ' sheet-dual' : '') + (clientCommonUe5 ? ' client-common-ue5' : '') + '" aria-label="Смета ' + service + '">' +
+      '<div class="sheet-head"><' + serviceHeading + ' class="service-tag">' + escapeHtml(title) + '</' + serviceHeading + '>' +
+      (dual ? '<span>Отдельно, ₽</span><span>С UE5, ₽</span>' : '<span>Стоимость, ₽</span>') + '</div>' +
+      catalog[scope.type][service].map((category, index) => {
+        const headingId = scopeId + "-" + service + "-group-" + index;
+        const titleMarkup = offer ? '<' + groupHeading + ' class="client-group-title" id="' + headingId + '">' +
+          category.title + '</' + groupHeading + '>' : '<span>' + category.title + '</span>';
+        const rowsMarkup = groupRows(scope, service, category, true).map((row, rowIndex, rows) => {
+          const starts = startsSubgroup(row, rowIndex, rows);
+          const accent = accentAttribute(row.subgroup);
+          const traffic = row.subgroup === "Трафик и анимации";
+          const clientSubgroup = offer && (Boolean(accent) || traffic);
+          const subgroupId = headingId + "-subgroup-" + rowIndex;
+          const heading = starts
+            ? '<div class="work-subgroup"' + accent + '><span' + (offer ? ' role="heading" aria-level="6"' : '') +
+              (clientSubgroup ? ' id="' + subgroupId + '"' : '') +
+              '>' + escapeHtml(row.subgroup) +
+              (row.subgroupBase ? ' <span class="base">База</span>' : '') +
+              '</span>' + subtotalCell(service, undefined, undefined, row.subgroup) + '</div>'
+            : '';
+          const rule = service === "UE5" && row.item.key === "apartmentPoi"
+            ? '<p class="property-rule"' + accentAttribute(row.subgroup) + ' id="property-rule-' + scopeId + '" tabindex="-1" data-invalid="' +
+              !hasPropertySelection(scope.queue) + '">Выберите хотя бы один способ. Можно отметить несколько.</p>'
+            : '';
+          const parent = row.item.parentWork;
+          const parentInactive = offer && parent && !row.scope.works[service][parent]?.selected ? ' data-parent-inactive' : '';
+          const extraTotal = offer && row.item.extraGroup && !parent ? extraGroupTotal(rows, service, row.item.extraGroup) : null;
+          const optionsHeading = parent && parent !== rows[rowIndex - 1]?.item.parentWork
+            ? '<div class="walk-options"' + accentAttribute(parent) + parentInactive + '>' +
+              (parent === "interiors" ? (offer ? "Опции для туров по квартирам" : "Опции интерьеров для прогулок") : "Опции для прогулок") + '</div>'
+            : '';
+          const rowMarkup = rule + optionsHeading + renderWork(row, service, scopeId, parentInactive, extraTotal);
+          if (!clientSubgroup) return heading + rowMarkup;
+          const open = starts ? '<section class="client-subgroup' + (traffic ? ' client-subgroup-traffic' : '') + '"' + accent + ' aria-labelledby="' + subgroupId + '">' +
+            heading + '<div class="client-subgroup-rows">' : '';
+          const close = row.subgroup !== rows[rowIndex + 1]?.subgroup ? '</div></section>' : '';
+          return open + rowMarkup + close;
+        }).join("");
+        const tone = ' tone-' + category.color;
+        const groupTitle = '<div class="group-band' + (offer ? '' : tone) + '">' + titleMarkup +
+          (dual ? subtotalCell(service, "price", index) : '') +
+          subtotalCell(service, dual ? "bundlePrice" : undefined, index) + '</div>';
+        return offer ? '<section class="client-group' + tone + '" aria-labelledby="' + headingId + '">' + groupTitle +
+          '<div class="client-group-rows">' + rowsMarkup + '</div></section>' : groupTitle + rowsMarkup;
+      }).join("") +
+      '<div class="sheet-foot"><span>Итого ' + service + '</span>' +
+      (dual ? subtotalCell(service, "price") : '') +
+      subtotalCell(service, dual ? "bundlePrice" : undefined) + '</div></section>';
+  }).join("");
+  return sheets + (!offer && services.length > 1
+    ? '<div class="scope-total"><span>Итого WEB + UE5 по разделу</span>' + subtotalCell("all") + '</div>'
+    : '');
+}
+
+function sheetArea(scope, scopeId) {
+  const sheets = renderSheets(scope, scopeId);
+  return sheets ? '<div data-sheet-area="' + scopeId + '">' + sheets + '</div>' : '';
+}
+
+function clientHeadingTotal(label) {
+  return '<div class="client-heading-total"><span>' + label + '</span>' + subtotalCell("all") + '</div>';
+}
+
+function renderClientQueueHeader(object, queue, apartments) {
+  const firstQueue = queue === object.queues[0];
+  const objectTotal = '<div class="object-totals" data-object-totals="' + object.id + '"></div>';
+  const objectTitle = firstQueue ? '<h2>' + escapeHtml(objectName(object)) + '</h2>' : '';
+  const queueTotal = clientHeadingTotal("Стоимость очереди");
+  const objectBreakdown = firstQueue && object.queues.length > 1 ?
+    '<div class="client-queue-footer">' + queueTotal +
+    (activeServices().includes("UE5") ? '<p>В сумму включены работы по объекту.</p>' : '') + '</div>' : '';
+  return '<header class="queue-editor client-queue-card">' +
+    '<div class="client-queue-details"><div class="client-queue-name">' + objectTitle + '<h3>' +
+    escapeHtml(queueName(queue)) + '</h3></div>' +
+    (apartments === null ? '' : '<div class="client-apartments"><span class="field-label">Количество квартир</span><strong>' +
+      whole.format(apartments) + '</strong></div>') +
+    (firstQueue ? objectTotal : queueTotal) + '</div>' + objectBreakdown + '</header>';
+}
+
+function renderOverviewQueue(object, queue) {
+  const id = object.id + "-" + queue.id;
+  const apartments = apartmentCount(queue);
+  const header = offer ? renderClientQueueHeader(object, queue, apartments) :
+    '<div class="queue-editor"><div class="field"><label for="name-' + id + '">Название очереди</label>' +
+      '<input id="name-' + id + '" data-name="queue" value="' + escapeHtml(queue.name) + '" maxlength="100" autocomplete="off"></div>' +
+      '<div class="field"><label for="apartments-' + id + '">Количество квартир</label>' +
+      '<input id="apartments-' + id + '" data-apartments="queue" type="text" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="Указать" value="' +
+      (apartments === null ? '' : whole.format(apartments)) + '"></div>' +
+      (object.queues.length > 1 ? '<button type="button" class="subtle" data-action="remove-queue">Удалить очередь</button>' : '') + '</div>';
+  return '<section class="estimate-scope" data-editor-queue="' + queue.id + '">' +
+    header + sheetArea(workScope(queue, object), id) + '</section>';
+}
+
+function renderClientOverviewObject(object) {
+  return '<section id="estimate-' + object.id + '" class="estimate-object" tabindex="-1" data-editor-object="' + object.id + '">' +
+    object.queues.map(queue => renderOverviewQueue(object, queue)).join("") + '</section>';
+}
+
+function renderOverviewObject(object) {
+  const preceding = state.objects[state.objects.indexOf(object) - 1];
+  const rate = discountBps(object);
+  return '<section id="estimate-' + object.id + '" class="estimate-object" data-editor-object="' + object.id + '">' +
+    '<div class="catalog-heading"><h2 data-object-title>' + escapeHtml(objectName(object)) + '</h2></div>' +
+    '<div class="object-editor"><div class="field"><label for="name-' + object.id + '">Название объекта</label>' +
+    '<input id="name-' + object.id + '" data-name="object" value="' + escapeHtml(object.name) + '" maxlength="100" autocomplete="off"></div>' +
+    (preceding || rate ? '<div class="field discount-field"><label for="discount-' + object.id + '">Скидка на объект, %</label>' +
+    '<input id="discount-' + object.id + '" data-discount="object" type="text" inputmode="decimal" maxlength="6" placeholder="0" autocomplete="off" value="' +
+    (rate ? percent.format(rate / 100) : '') + '"></div>' : '') +
+    '<div class="object-actions">' +
+    '<button class="button secondary" type="button" data-action="add-queue">+ Очередь</button>' +
+    (preceding ? '<button class="button secondary" type="button" data-action="copy-previous-prices" title="Заполнить пустые цены из объекта «' +
+      escapeHtml(objectName(preceding)) + '»">Цены из предыдущего ЖК</button>' : '') +
+    (state.objects.length > 1 ? '<button type="button" class="subtle" data-action="remove-object">Удалить объект</button>' : '') +
+    '</div><p class="object-copy-status" role="status" data-copy-status></p></div>' +
+    '<div class="object-totals" data-object-totals="' + object.id + '"></div>' +
+    object.queues.map(queue => renderOverviewQueue(object, queue)).join("") + '</section>';
+}
+
+function renderCatalog() {
+  const title = '<h2>Общий функционал</h2><p>Считается один раз для всех объектов по каждой технологии.</p>';
+  const heading = offer ? '<header class="client-section-head"><div class="client-section-copy">' + title +
+    '</div>' + clientHeadingTotal("Итого по разделу") + '</header>' : '<div class="catalog-heading">' + title + '</div>';
+  qs("#catalog").innerHTML = '<section class="estimate-scope" id="estimate-common"' + (offer ? ' tabindex="-1"' : '') + '>' +
+    heading + sheetArea(workScope(), "common") + '</section>' +
+    state.objects.map(offer ? renderClientOverviewObject : renderOverviewObject).join("");
+}
+
+function render() {
+  document.querySelectorAll("[data-mode]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === state.mode)));
+  renderContexts();
+  renderCatalog();
+  renderSummary();
+}
+
+function entryFor(works, service, key) {
+  return works[service][key] ??= {};
+}
+
+function referenceItems() {
+  return activeServices().filter(service => service !== "WEB" || state.mode === "both").flatMap(service =>
+    catalog.queue[service].flatMap(category => category.items).filter(item => item.reference).map(item => ({ service, item }))
+  );
+}
+
+function openReference() {
+  const entries = referenceItems();
+  const intro = '<p>Это диапазоны из КП по трём ЖК в Рязани. Там цены даны за объект целиком. Для Суворова объём и расценки определяются отдельно.</p>' +
+    '<p>Расценки WEB в примере относятся к совместному заказу с UE5. Ядро в старом КП включает дополнительные функции, поэтому его цена здесь задаётся вручную.</p>';
+  const body = entries.length
+    ? '<div class="field-label">Сопоставимые работы по объектам</div>' + entries.map(({ service, item }) =>
+      '<div class="reference-line"><span>' + service + ' · ' + escapeHtml(item.title) +
+      (item.key === "surround" ? " · 600 м" : "") + '</span><strong>' + whole.format(item.reference[0]) + '–' + rub(item.reference[1]) + '</strong></div>'
+    ).join("")
+    : '<p>Для самостоятельного WEB-макета отдельных расценок в примере нет.</p>';
+  qs("#reference-view").innerHTML = intro + body;
+  qs("#reference-dialog").showModal();
+}
+
+function replyMark(selected) {
+  return '<span class="reply-mark' + (selected ? '' : ' reply-mark-off') + '" aria-hidden="true">' +
+    (selected ? '✓' : '−') + '</span>';
+}
+
+function quoteTable(section) {
+  if (section.type === "object") return "";
+  const services = activeServices();
+  const total = sheetTotal(section, services);
+  if (!total.count) return "";
+  const apartments = apartmentCount(section.queue);
+  const heading = offer ? "h3" : "h2";
+  return '<section class="quote-section"><' + heading + '>' + escapeHtml(section.title) + '</' + heading + '>' +
+    (apartments === null ? '' : '<p class="queue-size">Количество квартир · ' + whole.format(apartments) + '</p>') +
+    '<div class="quote-table-wrap"><table class="quote-table">' +
+    '<thead><tr><th scope="col">Наименование работ</th><th scope="col">Стоимость</th></tr></thead><tbody>' +
+    services.map(service => catalog[section.type][service].map(category => {
+      const selected = groupRows(section, service, category, true)
+        .filter(({ scope, item }) => isSelected(scope.works, service, item));
+      if (!selected.length) return "";
+      const subtotal = rowTotals(selected, service);
+      const tone = 'group-band tone-' + category.color;
+      return '<tr><th scope="row" class="' + tone + '">' + service + ' · ' + category.title + '</th>' +
+        '<th class="' + tone + ' sum-value quote-group-amount">' + subtotalMarkup(subtotal) + '</th></tr>' +
+        selected.map((row, index) => {
+          const { scope, item, subgroup } = row;
+          const price = priceOf(scope, service, item);
+          const variant = selectedVariant(scope.works, service, item);
+          const title = item.title + (variant ? ' · ' + variant[1] : '');
+          const scopeText = workScopeText(scope.works, service, item);
+          const calculation = item.perApartment ? poiCalculation(poiBilling(scope, service, item)) : "";
+          const heading = startsSubgroup(row, index, selected)
+            ? '<tr class="quote-subgroup"' + accentAttribute(subgroup) + '><th scope="row">' + escapeHtml(subgroup) + (row.subgroupBase ? ' · База' : '') + '</th>' +
+              '<th class="sum-value">' + subtotalMarkup(rowTotals(selected.filter(entry => entry.subgroup === subgroup), service)) + '</th></tr>'
+            : '';
+          const rowClass = item.key === "core" ? ' class="quote-core"' : item.parentWork ? ' class="quote-child"'
+            : item.extraGroup ? ' class="quote-extra-lead"' : '';
+          const name = offer ? '<span class="reply-work-name">' + escapeHtml(title) + '</span>' +
+            (item.required ? '<span class="reply-base">База</span>' : '') : escapeHtml(title);
+          const details = name + '<span class="subtext">' + escapeHtml(workDetail(scope, item)) +
+            '</span>' + (calculation ? '<span class="subtext">' + escapeHtml(calculation) + '</span>' : '') +
+            (scopeText ? '<span class="subtext">' + escapeHtml(scopeText) + '</span>' : '');
+          const cell = offer ? '<div class="reply-work">' + replyMark(true) + '<div>' + details + '</div></div>' : details;
+          return heading + '<tr' + rowClass + accentAttribute(item.extraGroup ?? subgroup) + '><td>' + cell +
+            '</td><td>' + (price === null ? 'Уточняется' : rub(price)) + '</td></tr>';
+        }).join("");
+    }).join("")).join("") +
+    '<tr class="quote-sum"><td>' + (total.missing ? "Сумма по указанным ценам" : "Итого по разделу") + '</td><td>' +
+    amountText(total) + '</td></tr></tbody></table></div></section>';
+}
+
+function declinedWorksHtml(scopes, services) {
+  const declinedSections = scopes.filter(section => section.type !== "object").map(section => {
+    const groups = services.flatMap(service => catalog[section.type][service].map(category => {
+      const declined = groupRows(section, service, category, true)
+        .filter(({ scope, item }) => !isSelected(scope.works, service, item));
+      if (!declined.length) return "";
+      return '<div class="reply-excluded-group"><h4>' + escapeHtml(service + ' · ' + category.title) + '</h4><ul role="list">' +
+        declined.map(({ scope, item }) => '<li class="reply-work">' + replyMark(false) + '<div><span class="reply-work-name">' +
+          escapeHtml(item.title) + '</span>' +
+          (canSelect(scope.works, service, item) ? '' : ' <small>· Недоступно при текущем выборе</small>') + '</div></li>').join("") +
+        '</ul></div>';
+    })).join("");
+    return groups ? '<section class="quote-section"><h3>' + escapeHtml(section.title) + '</h3>' + groups + '</section>' : '';
+  }).join("");
+  const declinedService = offer.state.mode === "both" && state.mode !== "both" ? (state.mode === "WEB" ? "UE5" : "WEB") : "";
+  return (declinedService ? '<p class="quote-note">Технология не выбрана · ' + declinedService + '</p>' : '') +
+    (declinedSections || '<p class="quote-note">Все работы в выбранных технологиях включены.</p>');
+}
+
+function proposalHtml() {
+  const services = activeServices();
+  const { byService, gross, discounted, discount, net } = estimatePricing(services);
+  const hasDiscounts = discounted.length > 0;
+  const discounts = hasDiscounts
+    ? '<section class="quote-discounts"><h2>Скидки по объектам</h2>' +
+      discounted.map(entry => '<div class="quote-discount"><strong>' + escapeHtml(objectName(entry.object)) +
+        ' · скидка ' + discountLabel(entry.rate) + ' · ' + discountText(entry.discount, entry.gross) + '</strong>' +
+        '<span>До скидки · ' + amountText(entry.gross) + ' / Со скидкой · ' + amountText(entry.net) + '</span></div>').join("") + '</section>'
+    : '';
+  const quoteLine = (label, value) => '<div class="quote-service"><span>' + label + '</span><strong>' + value + '</strong></div>';
+  const project = [state.project.trim(), state.city.trim()].filter(Boolean).join(" · ");
+  const totals = '<div class="quote-totals">' +
+    (services.length > 1 ? byService.map(([service, value]) => quoteLine(service + (hasDiscounts ? " до скидок" : ""), amountText(value))).join("") : "") +
+    (hasDiscounts ? quoteLine("Смета до скидок", amountText(gross)) + quoteLine("Скидки на объекты", discountText(discount, gross)) : "") +
+    '<div class="quote-final"><span>' + (net.missing ? (hasDiscounts ? "По указанным ценам со скидками" : "Сумма по указанным ценам")
+      : (hasDiscounts ? "Стоимость со скидками" : "Общая стоимость")) +
+    '</span><strong>' + amountText(net) + '</strong></div></div>' +
+    (net.missing ? '<p class="quote-note">Позиции без согласованной цены: ' + net.missing + '. Полная стоимость будет рассчитана после их оценки.</p>' : "");
+  const scopes = sections();
+  const tables = scopes.map(quoteTable).join("");
+  const body = offer
+    ? totals + '<nav class="reply-nav" aria-label="Разделы ответа"><a href="#reply-selected">' + replyMark(true) +
+      'Выбрано</a><a href="#reply-excluded">' + replyMark(false) + 'Не выбрано</a></nav>' +
+      '<section class="reply-state reply-selected" id="reply-selected"><h2>' + replyMark(true) + 'Выбранные работы</h2>' + tables + discounts + '</section>' +
+      '<section class="reply-state reply-excluded" id="reply-excluded"><h2>' + replyMark(false) + 'Невыбранные работы</h2>' +
+      declinedWorksHtml(scopes, services) + '</section>'
+    : tables + discounts + totals;
+  return '<article class="proposal"><header class="proposal-header"><div class="brand">INEGO<small>.dev</small></div><div class="eyebrow">' +
+    services.join(" + ") + '</div></header><div class="eyebrow">' +
+    (offer ? 'Ответ по КП · ' + escapeHtml(offer.id) : 'Коммерческое предложение') + '</div>' +
+    '<h1>' + (offer ? 'Выбор работ' : 'Интерактивные макеты') + '</h1><p class="quote-project">' + escapeHtml(project) + '</p>' + body +
+    '<footer class="quote-footer">INEGO.dev · dev.inego.net</footer></article>';
+}
+
+function preview() {
+  if (!requirePropertySelection()) return;
+  qs("#quote-view").innerHTML = proposalHtml();
+  qs("#quote-dialog").showModal();
+}
+
+function projectFileName() {
+  return (state.project.trim() || state.city.trim() || "project").replace(/[^\p{L}\p{N}_-]+/gu, "_");
+}
+
+function downloadFile(name, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+function clientSnapshot() {
+  const snapshot = structuredClone(state);
+  if (snapshot.media && state.mode !== "both") {
+    snapshot.media = Object.fromEntries(Object.entries(snapshot.media).filter(([slot]) => slot.startsWith(state.mode + ":")));
+  }
+  const allWorks = [snapshot.common, ...snapshot.objects.flatMap(object =>
+    [objectScope(object).works, ...object.queues.map(queue => queue.works)])];
+  for (const works of allWorks) {
+    if (state.mode === "WEB") works.UE5 = {};
+    if (state.mode === "UE5") works.WEB = {};
+    if (state.mode === "WEB") {
+      for (const entry of Object.values(works.WEB)) delete entry.bundlePrice;
+    }
+    if (works.UE5.surround) delete works.UE5.surround.price;
+    if (!works.UE5.traffic?.selected) delete works.UE5.traffic;
+    if (works.UE5.apartmentPoi) {
+      const { selected, price_unit } = works.UE5.apartmentPoi;
+      works.UE5.apartmentPoi = { selected, price_unit };
+    }
+  }
+  return snapshot;
+}
+
+function clientShell(id) {
+  const modes = state.mode === "both" ? [["WEB", "WEB"], ["UE5", "UE5"], ["both", "WEB + UE5"]] : [[state.mode, state.mode]];
+  const queues = state.objects.reduce((count, object) => count + object.queues.length, 0);
+  return `
+    <div id="app">
+      <header class="masthead wrap">
+        <div class="brand">INEGO<small>.dev</small></div>
+        <nav class="mast-nav" aria-label="Разделы">
+          <button type="button" data-action="focus-estimate" aria-current="page">Смета</button>
+          <button type="button" data-action="preview">Мой выбор</button>
+        </nav>
+      </header>
+      <main class="wrap">
+        <section class="client-intro" aria-labelledby="offer-title">
+          <div class="intro">
+            <div class="eyebrow">Коммерческое предложение · ${id}</div>
+            <h1 id="offer-title">Интерактивные макеты</h1>
+            <p>Выберите нужные работы. Стоимость обновится автоматически.</p>
+          </div>
+          <div class="client-project">
+            <div class="field"><span class="field-label">Город</span><strong>${escapeHtml(state.city.trim() || "—")}</strong></div>
+            <div class="field"><span class="field-label">Жилой комплекс</span><strong>${escapeHtml(state.project.trim() || "Уточняется")}</strong></div>
+            <div class="field"><span class="field-label" id="mode-label">Формат макета</span><div class="modes" role="group" aria-labelledby="mode-label">
+              ${modes.map(([key, title]) => '<button class="mode" type="button" data-mode="' + key + '">' + title + '</button>').join("")}
+            </div></div>
+          </div>
+        </section>
+        <div class="client-overview" role="group" aria-label="Сводка по предложению">
+          <section class="client-metric client-estimate-top" id="estimate-summary" aria-labelledby="offer-total-title" tabindex="-1">
+            <h2 id="offer-total-title">Общая стоимость</h2>
+            <div id="sum-total" class="estimate-final" aria-live="polite"></div>
+            <a class="client-metric-link" href="#client-response" aria-label="Перейти к расчёту и ответу"><span aria-hidden="true">↗</span></a>
+          </section>
+          <section class="client-metric">
+            <h2>Объекты</h2>
+            <strong class="client-metric-value">${whole.format(state.objects.length)}</strong>
+            <a class="client-metric-link" href="#estimate-${escapeHtml(state.objects[0].id)}" aria-label="Перейти к объектам"><span aria-hidden="true">↗</span></a>
+          </section>
+          <section class="client-metric">
+            <h2>Очереди строительства</h2>
+            <strong class="client-metric-value">${whole.format(queues)}</strong>
+          </section>
+        </div>
+        <aside class="client-guide" aria-labelledby="client-guide-title" id="client-guide" hidden>
+          <button class="client-guide-close" type="button" data-action="dismiss-client-guide" aria-label="Закрыть подсказку">×</button>
+          <h2 id="client-guide-title">Как выбирать работы</h2>
+          <p><span class="base">База</span> — обязательные работы, которые всегда входят в расчёт.</p>
+          <p><strong>Опции</strong> можно включать и выключать.</p>
+        </aside>
+        <div class="layout client-layout">
+          <section class="catalog" id="estimate-all" tabindex="-1" aria-label="Перечень работ">
+            <nav id="contexts" class="context-bar client-contexts" aria-label="Разделы сметы"></nav>
+            <div id="catalog"></div>
+            <a class="button secondary client-return" href="#estimate-summary">К общей стоимости ↑</a>
+          </section>
+          <aside class="estimate" id="client-response" aria-labelledby="summary-title" tabindex="-1">
+            <h2 id="summary-title">Стоимость работ</h2>
+            <div id="summary" class="estimate-main"></div>
+            <div class="client-sidebar-total"><span id="client-sidebar-label"></span><strong id="client-sidebar-amount"></strong></div>
+            <div class="estimate-actions"><button type="button" class="button primary" data-action="preview">Сформировать ответ</button></div>
+          </aside>
+        </div>
+        <footer class="footer"><span>INEGO.dev · dev.inego.net</span></footer>
+      </main>
+    </div>
+    <dialog id="quote-dialog" aria-labelledby="preview-title">
+      <div class="dialog-bar">
+        <h2 id="preview-title">Мой выбор</h2>
+        <div class="dialog-actions">
+          <button class="button secondary" type="button" data-action="close-preview">Закрыть</button>
+          <button class="button secondary" type="button" data-action="download-reply">Скачать ответ</button>
+          <button class="button" type="button" data-action="copy-reply">Скопировать ответ</button>
+        </div>
+      </div>
+      <p class="quote-note copy-status" style="color:var(--muted)">Скачайте ответ в HTML и приложите его к сообщению для INEGO.dev. Для письма можно скопировать текст ответа.</p>
+      <p class="quote-note copy-status" id="copy-status" role="status"></p>
+      <div id="quote-view"></div>
+    </dialog>
+    <div id="print"></div>`;
+}
+
+function scriptJson(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+}
+
+function clientDocument(data, css, script) {
+  const clientCatalog = JSON.stringify(catalog, (key, value) => key === "reference" ? undefined : value);
+  const endScript = "<" + "/script>";
+  return '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<title>Коммерческое предложение · INEGO.dev</title><style>' + css + '</style></head><body class="client-document">' +
+    clientShell(escapeHtml(data.id)) + '<script>globalThis.inegoOffer = ' + scriptJson(data) + ';const catalog = ' +
+    clientCatalog.replace(/</g, "\\u003c") + ';const visualLibrary = ' + scriptJson(visualLibrary) + ';' +
+    endScript + '<script>' + script + endScript + '</body></html>';
+}
+
+function downloadClient() {
+  if (!requirePropertySelection()) return;
+  const id = Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  const data = { id, state: clientSnapshot() };
+  const css = ["#fonts", "#proposal-style", "#app-style"].map(selector => qs(selector).textContent).join("\n");
+  downloadFile("KP_INEGO_" + projectFileName() + "_" + id + ".html",
+    clientDocument(data, css, qs("#app-script").textContent), "text/html;charset=utf-8");
+}
+
+function replyDocument(css, content = proposalHtml()) {
+  return '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<title>Выбор работ по КП · INEGO.dev</title><style>' + css + '</style></head><body>' + content + '</body></html>';
+}
+
+function downloadClientReply() {
+  if (!requirePropertySelection()) return;
+  downloadFile("Vybor_INEGO_" + offer.id + ".html", replyDocument(qs("head style").textContent), "text/html;charset=utf-8");
+}
+
+function clientReply() {
+  const services = activeServices();
+  const { gross, discounted, discount, net } = estimatePricing(services);
+  const project = [state.project.trim(), state.city.trim()].filter(Boolean).join(" · ");
+  const lines = ["Выбор работ по КП " + offer.id, project, "Формат: " + services.join(" + ")];
+  if (offer.state.mode === "both" && state.mode !== "both") {
+    lines.push("Не выбрана технология: " + (state.mode === "WEB" ? "UE5" : "WEB"));
+  }
+  for (const section of sections()) {
+    if (section.type === "object") continue;
+    lines.push("", section.title);
+    const apartments = apartmentCount(section.queue);
+    if (apartments !== null) lines.push("Количество квартир · " + whole.format(apartments));
+    for (const service of services) {
+      const groups = catalog[section.type][service];
+      if (!groups.length) continue;
+      const declined = [];
+      if (sheetTotals(section, service).count) lines.push(service + " · Выбрано");
+      for (const group of groups) {
+        const rows = groupRows(section, service, group, true);
+        const subtotal = rowTotals(rows, service);
+        if (subtotal.count) lines.push(group.title + " — " + subtotalText(subtotal) +
+          (subtotal.missing ? " (без цены · " + subtotal.missing + ")" : ""));
+        for (const [index, row] of rows.entries()) {
+          const { scope, item, subgroup } = row;
+          if (isSelected(scope.works, service, item)) {
+            if (startsSubgroup(row, index, rows)) {
+              const nestedTotal = rowTotals(rows.filter(entry => entry.subgroup === subgroup), service);
+              lines.push(subgroup + (row.subgroupBase ? " · База" : "") + " — " + subtotalText(nestedTotal) +
+                (nestedTotal.missing ? " (без цены · " + nestedTotal.missing + ")" : ""));
+            }
+            const variant = selectedVariant(scope.works, service, item);
+            const price = priceOf(scope, service, item);
+            const scopeText = workScopeText(scope.works, service, item);
+            lines.push("• " + item.title + (variant ? " · " + variant[1] : "") + " — " +
+              (price === null ? "цена уточняется" : rub(price)));
+            if (item.perApartment) lines.push("  " + poiCalculation(poiBilling(scope, service, item)));
+            if (item.key === "infrastructureFlyover") lines.push("  " + flyoverRadius(scope.object));
+            if (scopeText) lines.push("  " + scopeText);
+          } else {
+            declined.push("• " + item.title);
+          }
+        }
+      }
+      if (declined.length) lines.push(service + " · Не выбрано", ...declined);
+    }
+  }
+  if (discounted.length) {
+    lines.push("", "Смета до скидок · " + amountText(gross));
+    for (const entry of discounted) {
+      lines.push(objectName(entry.object) + " · скидка " + discountLabel(entry.rate) + " · " + discountText(entry.discount, entry.gross));
+      lines.push("Итого по объекту со скидкой · " + amountText(entry.net));
+    }
+    lines.push("Скидки на объекты · " + discountText(discount, gross));
+  }
+  lines.push("", (discounted.length ? "Итого со скидками · " : net.missing ? "Сумма по указанным ценам: " : "Итого: ") + amountText(net));
+  if (net.missing) lines.push("Позиций с ценой к уточнению: " + net.missing);
+  return lines.join("\n");
+}
+
+async function copyReply() {
+  const status = qs("#copy-status");
+  try {
+    await navigator.clipboard.writeText(clientReply());
+    status.textContent = "Выбор скопирован. Вставьте его в письмо или сообщение для INEGO.dev.";
+  } catch {
+    const input = document.createElement("textarea");
+    input.value = clientReply();
+    input.className = "sr-only";
+    qs("#quote-dialog").append(input);
+    input.select();
+    let copied = false;
+    try { copied = document.execCommand("copy"); } catch {}
+    input.remove();
+    qs('[data-action="copy-reply"]').focus({ preventScroll: true });
+    status.textContent = copied ? "Выбор скопирован. Вставьте его в письмо или сообщение для INEGO.dev." : "Скачайте ответ и приложите его к письму или сообщению.";
+  }
+}
+
+function handleAction(action, button) {
+  const { object, queue } = editorScope(button);
+  let focusId;
+  switch (action) {
+    case "focus-estimate":
+      qs("#contexts").scrollIntoView({ block: "nearest" });
+      qs("#contexts a").focus();
+      return;
+    case "reference": openReference(); return;
+    case "property-rule": requirePropertySelection(); return;
+    case "close-reference": qs("#reference-dialog").close(); return;
+    case "preview": preview(); return;
+    case "close-preview": qs("#quote-dialog").close(); return;
+    case "dismiss-client-guide":
+      qs("#client-guide").hidden = true;
+      state.guideDismissed = true;
+      save();
+      return;
+    case "close-work-info": qs("#work-info-dialog").close(); return;
+    case "open-work-image": openWorkImage(button); return;
+    case "close-work-image": qs("#work-image-dialog").close(); return;
+    case "download": downloadClient(); return;
+    case "download-reply": downloadClientReply(); return;
+    case "copy-reply": copyReply(); return;
+    case "print": if (requirePropertySelection()) window.print(); return;
+    case "add-object": {
+      const entry = makeObject(state.nextObject++);
+      const previous = state.objects.at(-1);
+      if (previous) copyObjectPrices(previous, entry, true);
+      state.objects.push(entry);
+      focusId = "name-" + entry.id;
+      break;
+    }
+    case "copy-previous-prices": {
+      const previous = state.objects[state.objects.indexOf(object) - 1];
+      const copied = copyObjectPrices(previous, object);
+      save();
+      renderCatalog();
+      renderSummary();
+      const section = qs('[data-editor-object="' + object.id + '"]');
+      section.querySelector('[data-action="copy-previous-prices"]').focus({ preventScroll: true });
+      section.querySelector("[data-copy-status]").textContent = copied ? "Заполнено цен · " + copied : "У предыдущего ЖК нет цен для незаполненных позиций.";
+      return;
+    }
+    case "add-queue": {
+      const entry = makeQueue(object.nextQueue++);
+      object.queues.push(entry);
+      focusId = "name-" + object.id + "-" + entry.id;
+      break;
+    }
+    case "remove-object": {
+      if (state.objects.length <= 1 || !window.confirm('Удалить объект «' + objectName(object) + '» со всеми его очередями?')) return;
+      state.objects.splice(state.objects.indexOf(object), 1);
+      break;
+    }
+    case "remove-queue": {
+      if (object.queues.length <= 1 || !window.confirm('Удалить очередь «' + queueName(queue) + '» вместе с её сметой?')) return;
+      object.queues.splice(object.queues.indexOf(queue), 1);
+      focusId = "name-" + object.id;
+      break;
+    }
+    default: return;
+  }
+  save();
+  render();
+  if (focusId) {
+    const field = document.getElementById(focusId);
+    field.focus();
+    if (action.startsWith("add")) field.select();
+  } else if (action === "remove-object") {
+    qs("#contexts a").focus();
+  }
+}
+
+// Browser event handlers
+qs("#catalog").addEventListener("click", event => {
+  const row = event.target.closest(".work");
+  if (!row || event.defaultPrevented ||
+      event.target.closest("input, button, label, a, select, textarea, .variant-chooser") ||
+      document.getSelection()?.isCollapsed === false) return;
+  row.querySelector('input[type="checkbox"][data-item]:enabled')?.click();
+});
+
+document.addEventListener("click", event => {
+  const replyLink = event.target.closest("#quote-view .reply-nav a");
+  if (replyLink) {
+    event.preventDefault();
+    qs(replyLink.hash).scrollIntoView({ block: "start" });
+    return;
+  }
+  const button = event.target.closest("button");
+  if (!button) return;
+  if (button.dataset.infoKey) {
+    openWorkInfo(button);
+    return;
+  }
+  if (button.dataset.resetMedia) {
+    const slot = button.dataset.resetMedia;
+    try {
+      storeMedia(slot, null);
+      mediaMessage = null;
+    } catch (error) {
+      mediaMessage = { slot, text: error.message };
+    }
+    refreshMedia();
+    return;
+  }
+  if (button.dataset.action) {
+    handleAction(button.dataset.action, button);
+    return;
+  }
+  if (button.dataset.mode) {
+    state.mode = button.dataset.mode;
+    save();
+    render();
+  }
+});
+
+document.addEventListener("input", event => {
+  const input = event.target;
+  const { meta, name, apartments, discount, price, priceField, scopeText, service } = input.dataset;
+  if (meta) {
+    state[meta] = input.value;
+    save();
+  }
+  if (name) {
+    const { object, queue } = editorScope(input);
+    const entry = name === "object" ? object : queue;
+    entry.name = input.value;
+    if (name === "object") {
+      const link = qs('[data-jump="' + object.id + '"]');
+      const title = objectName(object);
+      link.textContent = title;
+      link.title = title;
+      input.closest("[data-editor-object]").querySelector("[data-object-title]").textContent = title;
+    } else {
+      renderSummary();
+    }
+    save();
+  }
+  if (scopeText) {
+    entryFor(scopeWorks(input).works, service, scopeText).scopeText = input.value;
+    save();
+  }
+  if (apartments) {
+    const { queue } = editorScope(input);
+    const text = input.value.replace(/\s/g, "");
+    const valid = !text || (/^\d{1,6}$/.test(text) && Number(text) <= maxApartments);
+    input.setAttribute("aria-invalid", String(!valid));
+    queue.apartments = valid && text ? Number(text) : null;
+    save();
+    renderSummary();
+  }
+  if (discount) {
+    const { object } = editorScope(input);
+    const text = input.value.trim().replace(/%$/, "").trim().replace(",", ".");
+    const valid = !text || (/^\d{1,3}(?:\.\d{0,2})?$/.test(text) && Number(text) <= 100);
+    input.setAttribute("aria-invalid", String(!valid));
+    if (valid) {
+      object.discountBps = Math.round(Number(text) * 100);
+      save();
+      renderSummary();
+    }
+  }
+  if (price) {
+    const text = input.value.replace(/[\s₽]/g, "");
+    const valid = !text || (/^\d{1,9}$/.test(text) && Number(text) <= maxCost);
+    input.setAttribute("aria-invalid", String(!valid));
+    entryFor(scopeWorks(input).works, service, price)[priceField] = valid && text ? Number(text) : null;
+    save();
+    renderSummary();
+  }
+});
+
+document.addEventListener("change", event => {
+  const input = event.target;
+  if (input.dataset.mediaSlot) {
+    attachMedia(input);
+    return;
+  }
+  const { service, item, variant } = input.dataset;
+  if (!item && !variant) return;
+  const area = input.closest("[data-sheet-area]");
+  const scope = scopeWorks(input);
+  const { works } = scope;
+  const radioValue = input.type === "radio" ? input.value : null;
+  const entry = entryFor(works, service, item || variant);
+  if (variant) entry.variant = input.value;
+  if (item) entry.selected = input.checked;
+  const replaced = item && input.checked
+    ? catalog[scope.type][service].flatMap(group => group.items).find(option => option.key === item)?.replaces
+    : undefined;
+  if (replaced && works[service][replaced]) works[service][replaced].selected = false;
+  const dependent = service === "UE5" ? ue5Dependents[item] : undefined;
+  if (dependent && !input.checked && works.UE5[dependent]) {
+    works.UE5[dependent].selected = false;
+  }
+  const selections = works[service];
+  for (const group of catalog[scope.type][service]) {
+    for (const option of group.items) {
+      if (selections[option.key]?.selected && !canSelect(works, service, option)) selections[option.key].selected = false;
+    }
+  }
+  save();
+  area.innerHTML = renderSheets(scopeWorks(area), area.dataset.sheetArea);
+  renderSummary();
+  const control = item ? '[data-item="' + item + '"]' : '[data-variant="' + variant + '"]';
+  const value = radioValue ? '[value="' + radioValue + '"]' : '';
+  area.querySelector('[data-service="' + service + '"]' + control + value)?.focus({ preventScroll: true });
+});
+
+document.addEventListener("focusout", event => {
+  const input = event.target;
+  const { service, price, priceField, apartments, discount } = input.dataset;
+  if (discount && input.getAttribute("aria-invalid") !== "true") {
+    const rate = discountBps(editorScope(input).object);
+    input.value = rate ? percent.format(rate / 100) : "";
+  }
+  if ((!price && !apartments) || input.getAttribute("aria-invalid") === "true") return;
+  const scope = scopeWorks(input);
+  const value = apartments ? apartmentCount(scope.queue) : scope.works[service][price]?.[priceField];
+  input.value = value === null || value === undefined ? "" : whole.format(value);
+});
+
+window.addEventListener("beforeprint", () => {
+  const missing = missingPropertySelections();
+  qs("#print").innerHTML = missing.length
+    ? '<article class="proposal"><h1>Выберите способ подбора</h1><p>' + propertyRequirement + '</p><ul>' +
+      missing.map(({ object, queue }) => '<li>' + escapeHtml(objectName(object) + " · " + queueName(queue)) + '</li>').join("") +
+      '</ul></article>'
+    : proposalHtml();
+});
+window.addEventListener("afterprint", () => { qs("#print").replaceChildren(); });
+document.body.insertAdjacentHTML("beforeend", workInfoShell());
+const workInfoDialog = qs("#work-info-dialog");
+let workInfoBackdropPressed = false;
+function isWorkInfoBackdrop(event) {
+  if (event.target !== workInfoDialog) return false;
+  const { top, right, bottom, left } = workInfoDialog.getBoundingClientRect();
+  return event.clientX < left || event.clientX >= right || event.clientY < top || event.clientY >= bottom;
+}
+workInfoDialog.addEventListener("pointerdown", event => {
+  workInfoBackdropPressed = event.button === 0 && isWorkInfoBackdrop(event);
+});
+workInfoDialog.addEventListener("pointercancel", () => { workInfoBackdropPressed = false; });
+workInfoDialog.addEventListener("click", event => {
+  if (workInfoBackdropPressed && isWorkInfoBackdrop(event)) workInfoDialog.close();
+  workInfoBackdropPressed = false;
+});
+workInfoDialog.addEventListener("close", () => {
+  workInfoBackdropPressed = false;
+  inspectedWork = null;
+  qs("#work-info-content").replaceChildren();
+});
+qs("#work-image-dialog").addEventListener("close", () => {
+  if (!qs("#work-image-dialog").open) qs("#work-image-dialog img").removeAttribute("src");
+});
+if (!offer) {
+  qs("#city").value = state.city;
+  qs("#project").value = state.project;
+} else {
+  window.addEventListener("hashchange", markClientContext);
+  window.addEventListener("scroll", markClientObjectPrice, { passive: true });
+  window.addEventListener("resize", markClientObjectPrice);
+  qs("#client-guide").hidden = state.guideDismissed === true;
+}
+render();
+</script>
+</body>
+</html>
